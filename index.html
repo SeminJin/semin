@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semin Jin</title>
+<meta name="description" content="Semin Jin — Post-doctoral researcher in Interior Architecture Design at Hanyang University. Human-AI Collaboration in Design.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     HERO — 디자인 랜딩 자리. 소스 받으면 여기를 교체.
+     ══════════════════════════════════════════════════ -->
+<section id="hero" style="min-height:60vh;display:grid;place-content:center;text-align:center;border-bottom:1px solid var(--line)">
+  <p style="font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase">
+    Landing — 디자인 소스 대기 중
+  </p>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     탭 — 기존 사이트 내용
+     ══════════════════════════════════════════════════ -->
+<nav class="tabs">
+  <div class="tabs-inner" role="tablist">
+    <button class="tab" role="tab" data-panel="publication" aria-selected="true">Publication</button>
+    <button class="tab" role="tab" data-panel="patent"      aria-selected="false">Patent</button>
+    <button class="tab" role="tab" data-panel="design"      aria-selected="false">Design Work</button>
+    <button class="tab" role="tab" data-panel="teaching"    aria-selected="false">Teaching &amp; Academic Service</button>
+    <button class="tab" role="tab" data-panel="cv"          aria-selected="false">CV</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="layout">
+    <main id="panel" class="panel is-active"></main>
+    <aside id="side" class="side"></aside>
+  </div>
+</div>
+
+<script src="data/site.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
