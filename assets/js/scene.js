@@ -111,16 +111,26 @@
     box.appendChild(mk('polygon', { points: pts(right), class: 'sc-face sc-face-r' }));
     box.appendChild(mk('polygon', { points: pts(top),   class: 'sc-face sc-face-t' }));
     g.appendChild(box);
+    o.el = box;
+    box.addEventListener('mouseenter', () => hover(o, true));
+    box.addEventListener('mouseleave', () => hover(o, false));
+    box.addEventListener('focus',      () => hover(o, true));
+    box.addEventListener('blur',       () => hover(o, false));
+    box.setAttribute('tabindex', '0');
+    box.setAttribute('role', 'img');
+    box.setAttribute('aria-label', `${o.name}, ${dim(o.w)} by ${dim(o.d)} metres`);
   }
 
   /* ---------- 클리어런스 (아이소 타원) ---------- */
   function drawClearance(g, o, delay) {
     const [px, py] = iso(o.x + o.w / 2, o.y + o.d / 2, 0);
     const r = o.clear * CELL;
-    g.appendChild(mk('ellipse', {
+    const e = mk('ellipse', {
       cx: px, cy: py, rx: r * COS * 1.35, ry: r * SIN * 1.35,
       class: 'sc-clear', style: `--d:${delay}ms`
-    }));
+    });
+    o.clearEl = e;
+    g.appendChild(e);
   }
 
   /* ---------- 렌더 ---------- */
@@ -189,6 +199,31 @@
     /* 주석 리더 — 바닥 오른쪽 모서리 바깥에 고정해 가구와 겹치지 않게 */
     annotate(gAnno, iso(ROOM, ROOM * .26, 0), LEAD, 'Grid', '0.6 × 0.6 m');
     annotate(gAnno, iso(ROOM, ROOM * .72, 0), LEAD, 'Clearance', 'reach ≈ 0.9 m');
+  }
+
+  /* ---------- 호버: 치수 배지 + 클리어런스 강조 ---------- */
+  const dim = c => (c * 0.6).toFixed(1);          // 1칸 = 0.6 m
+
+  function hover(o, on) {
+    o.el?.classList.toggle('is-hot', on);
+    o.clearEl?.classList.toggle('is-hot', on);
+    const old = svg.querySelector('.sc-info');
+    if (old) old.remove();
+    if (!on) return;
+
+    const [px, py] = iso(o.x + o.w / 2, o.y + o.d / 2, o.h);
+    const name = o.name, dims = `${dim(o.w)} × ${dim(o.d)} m`;
+    const wpx = Math.max(name.length * 6.2, dims.length * 6) + 18;
+    const hpx = 30, bx = px - wpx / 2, by = py - hpx - 12;
+
+    const g = mk('g', { class: 'sc-info' });
+    g.appendChild(mk('rect', { x: bx, y: by, width: wpx, height: hpx, class: 'sc-info-bg' }));
+    const t1 = mk('text', { x: px, y: by + 12, class: 'sc-info-name', 'text-anchor': 'middle' });
+    t1.textContent = name;
+    const t2 = mk('text', { x: px, y: by + 24, class: 'sc-info-dim', 'text-anchor': 'middle' });
+    t2.textContent = dims;
+    g.append(t1, t2);
+    svg.appendChild(g);
   }
 
   /* ---------- 인체 실루엣 (원점 기준으로 그리고 transform으로 이동) ---------- */

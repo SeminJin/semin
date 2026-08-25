@@ -9,8 +9,8 @@
   --line:#e4e2de;
   --bg:#fbfaf8;
   --bg-2:#ffffff;
-  --accent:#8a2233;
-  --accent-soft:#f3e9ea;
+  --accent:#7a002b;
+  --accent-soft:#f6ebee;
 
   --sp-xs:.5rem; --sp-s:1rem; --sp-m:2rem; --sp-l:4rem; --sp-xl:7rem;
   --maxw:1180px;
@@ -24,7 +24,7 @@
   :root:not([data-theme="light"]){
     --ink:#f0eeea; --ink-2:#b4b0aa; --ink-3:#7e7a75;
     --line:#2b2926; --bg:#111110; --bg-2:#191817;
-    --accent:#e8909c; --accent-soft:#2a1c1f;
+    --accent:#ef8fa5; --accent-soft:#2a1c1f;
   }
 }
 
@@ -188,13 +188,13 @@ img{max-width:100%; display:block}
    ============================================================ */
 :root{
   --navy:#232a63;
-  --orange:#ef8f21;
+  --point:#7a002b;
   --floor:#aeb8d6;
   --floor-line:#8d99c2;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --navy:#aab4ee; --orange:#ffa93f;
+    --navy:#aab4ee; --point:#ef8fa5;
     --floor:#232842; --floor-line:#3c4468;
   }
 }
@@ -212,7 +212,7 @@ img{max-width:100%; display:block}
 .hero-text{position:relative; z-index:2}
 .hero-eyebrow{
   font-family:var(--mono); font-size:.66rem; letter-spacing:.16em;
-  text-transform:uppercase; color:var(--orange); margin:0 0 1.4rem;
+  text-transform:uppercase; color:var(--point); margin:0 0 1.4rem;
   display:flex; align-items:center; gap:.6rem;
 }
 .hero-eyebrow::after{content:""; flex:1; height:1px; background:var(--line); max-width:90px}
@@ -222,7 +222,7 @@ img{max-width:100%; display:block}
   font-size:clamp(3.2rem,9vw,6.4rem); line-height:.92;
   letter-spacing:-.03em; margin:0 0 1.5rem; color:var(--navy);
 }
-.hero-name em{font-style:italic; color:var(--orange)}
+.hero-name em{font-style:italic; color:var(--point)}
 
 .hero-lede{
   font-size:clamp(1.02rem,1.7vw,1.3rem); line-height:1.5;
@@ -273,14 +273,14 @@ img{max-width:100%; display:block}
 @keyframes boxIn{from{opacity:0; transform:translateY(-14px) scale(.94)} to{opacity:1; transform:none}}
 
 .sc-clear{
-  fill:var(--orange); fill-opacity:.10;
-  stroke:var(--orange); stroke-width:.9; stroke-dasharray:3 3; stroke-opacity:.65;
+  fill:var(--point); fill-opacity:.055;
+  stroke:var(--point); stroke-width:.9; stroke-dasharray:3 3; stroke-opacity:.42;
   opacity:0; animation:fadeIn .6s ease forwards; animation-delay:var(--d,0ms);
 }
 @keyframes fadeIn{to{opacity:1}}
 
 .sc-path{
-  fill:none; stroke:var(--orange); stroke-width:1.5;
+  fill:none; stroke:var(--point); stroke-width:1.5;
   stroke-dasharray:5 4; stroke-linecap:round; opacity:.75;
   animation:dash 22s linear infinite;
 }
@@ -294,8 +294,20 @@ img{max-width:100%; display:block}
 .sc-arm{stroke:var(--navy); stroke-width:1.9; stroke-linecap:round; fill:none}
 .sc-person{filter:drop-shadow(0 2px 3px rgba(0,0,0,.16))}
 
+.sc-box{cursor:pointer}
+.sc-box .sc-face{transition:opacity .16s}
+.sc-box.is-hot .sc-face-t{fill:var(--point); opacity:.16}
+.sc-box.is-hot .sc-face-l{opacity:.34}
+.sc-box.is-hot .sc-face-r{opacity:.2}
+.sc-box.is-hot .sc-face{stroke:var(--point); stroke-width:1.2}
+.sc-clear{transition:fill-opacity .16s, stroke-opacity .16s}
+.sc-clear.is-hot{fill-opacity:.2; stroke-opacity:1}
+.sc-info{pointer-events:none}
+.sc-info-bg{fill:var(--bg); stroke:var(--point); stroke-width:.9; rx:2}
+.sc-info-name{font-family:var(--sans); font-size:10px; font-weight:700; fill:var(--point)}
+.sc-info-dim{font-family:var(--mono); font-size:9.5px; fill:var(--ink-2)}
 .sc-lead{fill:none; stroke:var(--ink-3); stroke-width:.8; stroke-dasharray:2.5 2.5}
-.sc-dot{fill:var(--orange)}
+.sc-dot{fill:var(--point)}
 .sc-label{
   font-family:var(--sans); font-size:10.5px; font-weight:600;
   fill:var(--navy); letter-spacing:.02em;
