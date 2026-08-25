@@ -381,3 +381,58 @@ img{max-width:100%; display:block}
 }
 .cv-fallback{font-size:.78rem; color:var(--ink-3); margin:.7rem 0 0; text-align:center}
 .cv-fallback a{color:var(--accent)}
+
+/* ============================================================
+   렌즈 탭 · CML 컨트롤 · 조명 · 대안 노드
+   ============================================================ */
+.lens{display:flex; gap:1.3rem; margin:0 0 .7rem; border-bottom:1px solid var(--line)}
+.lens-btn{
+  appearance:none; border:0; background:none; cursor:pointer; font:inherit;
+  font-size:.7rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); padding:.55rem 0; border-bottom:2px solid transparent;
+  margin-bottom:-1px; transition:color .18s;
+}
+.lens-btn:hover{color:var(--ink)}
+.lens-btn[aria-selected="true"]{color:var(--navy); border-bottom-color:var(--point)}
+.lens-desc{
+  font-size:.78rem; line-height:1.5; color:var(--ink-2);
+  min-height:2.6em; max-width:40ch; margin:0 0 1.4rem;
+}
+.hero-actions{align-items:center}
+.cml{display:flex; gap:.4rem; flex-wrap:wrap}
+.cml-btn{
+  appearance:none; cursor:pointer; font:inherit; font-family:var(--mono);
+  font-size:.66rem; letter-spacing:.04em; background:none; color:var(--ink-2);
+  border:1px solid var(--line); border-radius:2px; padding:.5rem .6rem;
+  display:inline-flex; align-items:center; gap:.4rem; transition:.16s;
+}
+.cml-btn b{color:var(--point); font-weight:700}
+.cml-btn:hover{border-color:var(--point); color:var(--ink)}
+.ctl-hint{font-family:var(--mono); font-size:.66rem; color:var(--ink-3); letter-spacing:.04em}
+
+/* 조명 */
+.sc-lamp{opacity:0; animation:fadeIn .55s ease forwards; animation-delay:var(--d,0ms)}
+.sc-cone{pointer-events:none}
+.sc-pool{fill-opacity:.14; stroke:none}
+.sc-pool.sc-warm{fill:#f5c542} .sc-pool.sc-cool{fill:#6aa9ee}
+.sc-pole{stroke:var(--ink); stroke-width:2}
+.sc-foot{fill:var(--ink)}
+.sc-shade{stroke:var(--ink); stroke-width:1; fill:#fff}
+.sc-shade.sc-warm{fill:#fdf1cf} .sc-shade.sc-cool{fill:#dce9fa}
+.sc-mat{pointer-events:none}
+
+/* 대안 · 노드 그래프 */
+.sc-ghost{
+  fill:none; stroke:var(--point); stroke-width:.9; stroke-dasharray:3 3;
+  opacity:0; animation:ghostIn .5s ease forwards; animation-delay:var(--d,0ms);
+}
+@keyframes ghostIn{to{opacity:.4}}
+.sc-edge{fill:none; stroke:var(--ink-3); stroke-width:1; stroke-dasharray:2.5 2.5}
+.sc-node{fill:var(--bg); stroke:var(--ink-3); stroke-width:1.4; cursor:pointer; transition:.16s}
+.sc-node:hover{stroke:var(--point)}
+.sc-node.on{fill:var(--point); stroke:var(--point)}
+.sc-node-src{fill:var(--navy); stroke:var(--navy); cursor:default}
+.sc-node-h{font-family:var(--mono); font-size:8.5px; fill:var(--ink-3); letter-spacing:.06em}
+.sc-node-l{font-family:var(--mono); font-size:9px; fill:var(--ink-3)}
+@media (prefers-reduced-motion:reduce){.sc-lamp,.sc-ghost{animation:none; opacity:1}}
+[hidden]{display:none !important}
