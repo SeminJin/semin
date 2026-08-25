@@ -25,29 +25,16 @@
       working on <b>Human&ndash;AI Collaboration in Design</b> &mdash; spatial, perceptual, and experiential.
     </p>
     <nav class="lens" role="tablist" aria-label="research lens">
-      <button class="lens-btn" role="tab" data-mode="spatial"      aria-selected="true">Spatial</button>
-      <button class="lens-btn" role="tab" data-mode="perceptual"   aria-selected="false">Perceptual</button>
-      <button class="lens-btn" role="tab" data-mode="experiential" aria-selected="false">Experiential</button>
+      <button class="lens-btn" role="tab" aria-selected="true">Spatial</button>
+      <button class="lens-btn" role="tab" aria-selected="false">Perceptual</button>
+      <button class="lens-btn" role="tab" aria-selected="false">Experiential</button>
     </nav>
     <p class="lens-desc" id="lens-desc"></p>
-
-    <div class="hero-actions">
-      <div data-ctl="spatial">
-        <button class="regen" id="regen" type="button">&#8635; Regenerate layout</button>
-      </div>
-      <div data-ctl="perceptual" class="cml" hidden>
-        <button class="cml-btn" id="btn-c" type="button"><b>C</b> <span id="chip-c"></span></button>
-        <button class="cml-btn" id="btn-m" type="button"><b>M</b> <span id="chip-m"></span></button>
-        <button class="cml-btn" id="btn-l" type="button"><b>L</b> <span id="chip-l"></span></button>
-      </div>
-      <div data-ctl="experiential" hidden>
-        <span class="ctl-hint">&#8599; Pick a node in the graph</span>
-      </div>
-      <a class="hero-scroll" href="#publication">Research <span>&darr;</span></a>
-    </div>
+    <a class="hero-scroll" href="#publication">Research <span>&darr;</span></a>
   </div>
   <div class="hero-scene">
-    <svg id="scene" role="img" aria-label="Isometric room layout generated with anthropometric clearance zones"></svg>
+    <div class="turntable" id="turntable" role="img"
+         aria-label="Three isometric rooms showing spatial, perceptual and experiential research"></div>
   </div>
 </header>
 
