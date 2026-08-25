@@ -436,3 +436,14 @@ img{max-width:100%; display:block}
 .sc-node-l{font-family:var(--mono); font-size:9px; fill:var(--ink-3)}
 @media (prefers-reduced-motion:reduce){.sc-lamp,.sc-ghost{animation:none; opacity:1}}
 [hidden]{display:none !important}
+
+/* 슬라이드 캡션 */
+.caps{position:relative; margin-top:.9rem; min-height:5.5rem}
+.cap{position:absolute; inset:0; opacity:0; visibility:hidden; transition:opacity .28s}
+.cap.on{opacity:1; visibility:visible; position:relative}
+.cap-title{
+  font-size:.82rem; font-weight:700; letter-spacing:.01em;
+  color:var(--accent); margin:0 0 .35rem;
+}
+.cap-text{font-size:.82rem; line-height:1.6; color:var(--ink-2); max-width:64ch; margin:0}
+@media (max-width:760px){.caps{min-height:9rem}}

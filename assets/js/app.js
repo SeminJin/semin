@@ -61,36 +61,40 @@
 
     design() {
       return SITE.designWork.map((w, wi) => {
-        const slides = [
-          ...(w.video ? [{ type: 'video', id: w.video }] : []),
-          ...w.images.map(src => ({ type: 'img', src }))
-        ];
-        const stage = slides.map((s, i) => s.type === 'video'
+        const sl = w.slides || [];
+        const stage = sl.map((s, i) => s.video
           ? `<div class="slide${i ? '' : ' on'}" data-i="${i}">
-               <iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${s.id}"
-                 title="${w.title} — video" frameborder="0" allowfullscreen
+               <iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${s.video}"
+                 title="${w.title} — ${s.title}" frameborder="0" allowfullscreen
                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
              </div>`
           : `<div class="slide${i ? '' : ' on'}" data-i="${i}">
-               <img src="${s.src}" alt="${w.title} ${i + 1}" loading="lazy">
+               <img src="${s.src}" alt="${w.title} — ${s.title}" loading="lazy">
              </div>`).join('');
-        const thumbs = slides.map((s, i) => s.type === 'video'
-          ? `<button class="thumb${i ? '' : ' on'}" data-i="${i}" aria-label="video">
-               <span class="thumb-play">&#9654;</span></button>`
-          : `<button class="thumb${i ? '' : ' on'}" data-i="${i}" aria-label="image ${i + 1}">
-               <img src="${s.src}" alt="" loading="lazy"></button>`).join('');
+
+        const thumbs = sl.map((s, i) => s.video
+          ? `<button class="thumb${i ? '' : ' on'}" data-i="${i}" title="${s.title}"
+                     aria-label="${s.title}"><span class="thumb-play">&#9654;</span></button>`
+          : `<button class="thumb${i ? '' : ' on'}" data-i="${i}" title="${s.title}"
+                     aria-label="${s.title}"><img src="${s.src}" alt="" loading="lazy"></button>`).join('');
+
+        const caps = sl.map((s, i) => `<div class="cap${i ? '' : ' on'}" data-i="${i}">
+            <h4 class="cap-title">${s.title}</h4>
+            <p class="cap-text">${s.text}</p>
+          </div>`).join('');
 
         return `<article class="work" data-w="${wi}">
           <h3 class="work-title">${w.title}</h3>
           <p class="work-meta">${w.meta}</p>
           ${w.award ? `<p class="award">${w.award}</p>` : ''}
-          ${slides.length ? `<div class="slider" data-count="${slides.length}">
+          ${sl.length ? `<div class="slider" data-count="${sl.length}">
             <div class="stage">${stage}
               <button class="nav prev" aria-label="previous">&#8249;</button>
               <button class="nav next" aria-label="next">&#8250;</button>
-              <span class="counter">1 / ${slides.length}</span>
+              <span class="counter">01 / ${String(sl.length).padStart(2, '0')}</span>
             </div>
             <div class="thumbs">${thumbs}</div>
+            <div class="caps">${caps}</div>
           </div>` : ''}
           <p class="work-desc">${w.desc}</p>
         </article>`;
@@ -122,6 +126,7 @@
     root.querySelectorAll('.slider').forEach(sl => {
       const slides = [...sl.querySelectorAll('.slide')];
       const thumbs = [...sl.querySelectorAll('.thumb')];
+      const caps   = [...sl.querySelectorAll('.cap')];
       const counter = sl.querySelector('.counter');
       let cur = 0;
 
@@ -129,7 +134,9 @@
         cur = (i + slides.length) % slides.length;
         slides.forEach((s, n) => s.classList.toggle('on', n === cur));
         thumbs.forEach((t, n) => t.classList.toggle('on', n === cur));
-        counter.textContent = `${cur + 1} / ${slides.length}`;
+        caps.forEach((c, n) => c.classList.toggle('on', n === cur));
+        counter.textContent =
+          `${String(cur + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
         // 보이지 않는 슬라이드의 영상은 정지
         slides.forEach((s, n) => {
           const f = s.querySelector('iframe');

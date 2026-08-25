@@ -176,14 +176,14 @@ const SITE = {
       award: "Excellence Award",
       year: 2021,
       desc: "Separated from central Seoul by railway infrastructure and steep terrain, Manri Market has retained a distinctive urban identity while gradually losing its vitality as a traditional marketplace. Parasol Memory reimagines the declining market as a flexible public space where memories of the existing market coexist with temporary programs, reconnecting the fragmented neighborhood through everyday activity and festivity.",
-      images: [
-        "assets/img/work/parasol-memory/01.jpg",
-        "assets/img/work/parasol-memory/02.jpg",
-        "assets/img/work/parasol-memory/03.jpg",
-        "assets/img/work/parasol-memory/04.jpg",
-        "assets/img/work/parasol-memory/05.jpg"
-      ],
-      video: "dwGzhwqycQw"
+      slides: [
+        { src: "assets/img/work/parasol-memory/01.jpg", title: "Existing Manri Market", text: "Located near Seoul Station, Manri Market developed organically along the sloping streets of Seogye-dong, where vendors and shops appeared wherever people moved, met, and exchanged goods. Today, the market remains physically present but has largely lost the vitality and functions of its former marketplace." },
+        { src: "assets/img/work/parasol-memory/02.jpg", title: "Parasol Pop-up Space", text: "The project takes the parasol—a familiar element of traditional street markets—as a symbol of temporality and occupation. A parasol appears when activity begins and disappears when it ends, temporarily transforming an ordinary street into a place of exchange, gathering, and social interaction." },
+        { src: "assets/img/work/parasol-memory/03.jpg", title: "Memory & Imagination", text: "The proposal is organized around two complementary ideas: Memory and Imagination. Memory reinforces the everyday activities and spatial character of the existing market, while Imagination introduces flexible spaces for new activities to emerge. The Parasol Plaza and Pop-up Space accommodate temporary markets, events, gatherings, and festivals in response to changing needs." },
+        { src: "assets/img/work/parasol-memory/04.jpg", title: "Preserving the Existing Structure", text: "Rather than replacing the market's complex spatial structure, the project embraces the different levels, entrances, traces, and irregularities created over time. New interventions work within this existing fabric, preserving the identity of the market while reconnecting the fragmented slopes of Manri Hill." },
+        { src: "assets/img/work/parasol-memory/05.jpg", title: "Physical Model", text: "The physical model reveals how permanent memories and temporary activities coexist within the existing market fabric. Rather than imposing a singular new structure, the proposal works with the accumulated levels, paths, and spaces of Manri Market while allowing new activities to emerge throughout the site." },
+        { video: "dwGzhwqycQw", title: "Project Film", text: "By allowing permanent memories and temporary activities to coexist, Parasol Memory transforms Manri Market into an evolving public realm. The project preserves the identity of the existing market while reconnecting the fragmented slopes of Manri Hill through new possibilities for gathering, exchange, and celebration." }
+      ]
     },
     {
       slug: "return-to-flow",
@@ -192,10 +192,10 @@ const SITE = {
       award: "Excellence Award",
       year: 2022,
       desc: "As highways and electric mobility reshape transportation, roadside rest areas and gas stations are gradually losing their original roles. Return to Flow of Nature reimagines an abandoned rest area along National Route 44 as a wellness retreat—transforming obsolete roadside infrastructure into a destination worth visiting again.",
-      images: [
-        "assets/img/work/return-to-flow/01.jpg",
-        "assets/img/work/return-to-flow/02.jpg",
-        "assets/img/work/return-to-flow/03.jpg"
+      slides: [
+        { src: "assets/img/work/return-to-flow/01.jpg", title: "Reimagining Roadside Infrastructure", text: "Return to Flow of Nature reimagines an abandoned roadside rest area along National Route 44 in Yangpyeong, South Korea. Once built to serve travelers, rest areas and gas stations along national highways have gradually lost their role as traffic has shifted toward expressways. The transition toward electric mobility is expected to further accelerate this change, leaving many roadside facilities without their original purpose." },
+        { src: "assets/img/work/return-to-flow/02.jpg", title: "Transforming the Existing Site", text: "The project reorganizes the existing structures and landscape for a new form of occupation. The former gas station, accommodation spaces, circulation routes, and surrounding terrain are adapted to support rest, contemplation, and longer stays, allowing the site to take on a new role beyond mobility." },
+        { src: "assets/img/work/return-to-flow/03.jpg", title: "Wellness Retreat", text: "The abandoned rest area is transformed into a wellness retreat where the journey itself becomes a reason to stop. Instead of functioning as a transient roadside facility, the site becomes a destination where visitors intentionally arrive, stay, and reconnect with the surrounding landscape. Through this transformation, the rest area returns to the flow of nature." }
       ]
     },
     {
@@ -205,10 +205,10 @@ const SITE = {
       award: "",
       year: 2022,
       desc: "Super Block reimagines the area around Busanjin Station as a large-scale urban park connecting essential neighborhood facilities within a 15-minute walking radius. By linking local nodes through a continuous pedestrian landscape and relocating parking underground, the project transforms a dense neighborhood into a more walkable and connected public realm.",
-      images: [
-        "assets/img/work/super-block/01.jpg",
-        "assets/img/work/super-block/02.jpg",
-        "assets/img/work/super-block/03.jpg"
+      slides: [
+        { src: "assets/img/work/super-block/01.jpg", title: "A 15-Minute Neighborhood Park", text: "Super Block proposes a large-scale urban park around Busanjin Station, connecting essential neighborhood facilities within a 15-minute walking radius. Schools, community offices, health centers, and cultural facilities become key local nodes, while the area between them is reorganized as a continuous public landscape. By placing everyday destinations within a shared pedestrian network, the project transforms a fragmented neighborhood into a more accessible and connected urban environment." },
+        { src: "assets/img/work/super-block/02.jpg", title: "Connecting Urban Nodes", text: "The masterplan organizes the neighborhood around a central public landscape, from which pedestrian routes extend radially toward surrounding community facilities. These connections shorten everyday travel between key destinations while creating a clear spatial network through the park. Below ground, a large shared parking structure absorbs neighborhood parking demand and reduces surface congestion, allowing the ground level to be reclaimed for pedestrians and public space." },
+        { src: "assets/img/work/super-block/03.jpg", title: "Park as Urban Infrastructure", text: "The resulting landscape operates as more than a conventional park. It becomes a piece of urban infrastructure that integrates mobility, public programs, neighborhood facilities, and everyday recreation within a single continuous system. By relocating parking underground and prioritizing pedestrian movement above, Super Block creates a greener and more walkable public realm for a dense and long-established neighborhood." }
       ]
     },
     {
@@ -218,12 +218,12 @@ const SITE = {
       award: "",
       year: 2022,
       desc: "Inspired by the lively urban scenes of the late-Joseon painting Taepyeongseongsido, Scenes of the Arcade reimagines an aging antique art arcade as a contemporary cultural street. Spaces for viewing, learning, making, shopping, and gathering reconnect traditional art with everyday neighborhood life, while a modular kinetic facade allows the arcade to adapt to changing cultural and public programs.",
-      images: [
-        "assets/img/work/scenes-of-the-arcade/01.jpg",
-        "assets/img/work/scenes-of-the-arcade/02.jpg",
-        "assets/img/work/scenes-of-the-arcade/03.jpg",
-        "assets/img/work/scenes-of-the-arcade/04.jpg",
-        "assets/img/work/scenes-of-the-arcade/05.gif"
+      slides: [
+        { src: "assets/img/work/scenes-of-the-arcade/05.gif", title: "Kinetic Facade", text: "A modular kinetic facade allows the renovated spaces to respond to changing programs and levels of openness. The system can adapt to classes, lectures, exhibitions, library programs, and other cultural activities while changing the relationship between the interior and the surrounding street. The facade becomes a flexible architectural layer that supports different forms of learning, exchange, and public activity." },
+        { src: "assets/img/work/scenes-of-the-arcade/01.jpg", title: "An Aging Antique Art Arcade", text: "The project renovates an aging antique art arcade located beneath a residential apartment complex. The existing shops stretch along the bases of separate apartment blocks, creating a distinctive relationship between everyday residential life, the street, and the commercial arcade. Rather than treating the shops as an isolated retail facility, the proposal reconnects these spaces with the movement of the surrounding neighborhood." },
+        { src: "assets/img/work/scenes-of-the-arcade/02.jpg", title: "Inspired by Taepyeongseongsido", text: "The project is inspired by Taepyeongseongsido, a late-Joseon painting depicting an idealized and prosperous city filled with people, shops, buildings, and everyday activities. People move, play, trade goods, make objects, and gather throughout the city. These overlapping scenes of commerce, production, leisure, and social life become the conceptual basis for reimagining the antique arcade." },
+        { src: "assets/img/work/scenes-of-the-arcade/03.jpg", title: "From Shops to Shared Experience", text: "The spatial organization translates the activities found in Taepyeongseongsido into a contemporary sequence of programs and movement. Existing antique shops are connected with spaces for exhibitions, learning, making, lectures, and informal gathering. Visitors move between the street, arcade, and apartment blocks while experiencing traditional art through viewing, purchasing, learning, and making." },
+        { src: "assets/img/work/scenes-of-the-arcade/04.jpg", title: "A Contemporary Urban Scene", text: "The renewed arcade becomes a contemporary interpretation of the lively urban scenes depicted in Taepyeongseongsido. Commercial activity is combined with exhibitions, workshops, cultural programs, and everyday pedestrian movement, allowing traditional art to become part of daily neighborhood life. The arcade is transformed from a static retail environment into a shared cultural street where different activities continuously overlap." }
       ]
     }
   ],
