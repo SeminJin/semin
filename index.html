@@ -13,13 +13,26 @@
 <body>
 
 <!-- ══════════════════════════════════════════════════
-     HERO — 디자인 랜딩 자리. 소스 받으면 여기를 교체.
+     HERO — Anthropometric Scene Generator
      ══════════════════════════════════════════════════ -->
-<section id="hero" style="min-height:60vh;display:grid;place-content:center;text-align:center;border-bottom:1px solid var(--line)">
-  <p style="font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase">
-    Landing — 디자인 소스 대기 중
-  </p>
-</section>
+<header class="hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow">Designer &times; Researcher</p>
+    <h1 class="hero-name">Semin<br><em>Jin</em></h1>
+    <p class="hero-lede">I design how people and machines shape space together.</p>
+    <p class="hero-sub">
+      Post-doctoral researcher in <b>Interior Architecture Design</b> at Hanyang University,
+      working on <b>Human&ndash;AI Collaboration in Design</b> &mdash; spatial, perceptual, and experiential.
+    </p>
+    <div class="hero-actions">
+      <button class="regen" id="regen" type="button">&#8635; Regenerate layout</button>
+      <a class="hero-scroll" href="#publication">Research <span>&darr;</span></a>
+    </div>
+  </div>
+  <div class="hero-scene">
+    <svg id="scene" role="img" aria-label="Isometric room layout generated with anthropometric clearance zones"></svg>
+  </div>
+</header>
 
 <!-- ══════════════════════════════════════════════════
      탭 — 기존 사이트 내용
@@ -41,6 +54,7 @@
   </div>
 </div>
 
+<script src="assets/js/scene.js"></script>
 <script src="data/site.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
