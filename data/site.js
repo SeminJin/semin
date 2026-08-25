@@ -176,7 +176,14 @@ const SITE = {
       award: "Excellence Award",
       year: 2021,
       desc: "Separated from central Seoul by railway infrastructure and steep terrain, Manri Market has retained a distinctive urban identity while gradually losing its vitality as a traditional marketplace. Parasol Memory reimagines the declining market as a flexible public space where memories of the existing market coexist with temporary programs, reconnecting the fragmented neighborhood through everyday activity and festivity.",
-      images: []
+      images: [
+        "assets/img/work/parasol-memory/01.jpg",
+        "assets/img/work/parasol-memory/02.jpg",
+        "assets/img/work/parasol-memory/03.jpg",
+        "assets/img/work/parasol-memory/04.jpg",
+        "assets/img/work/parasol-memory/05.jpg"
+      ],
+      video: "dwGzhwqycQw"
     },
     {
       slug: "return-to-flow",
@@ -185,7 +192,11 @@ const SITE = {
       award: "Excellence Award",
       year: 2022,
       desc: "As highways and electric mobility reshape transportation, roadside rest areas and gas stations are gradually losing their original roles. Return to Flow of Nature reimagines an abandoned rest area along National Route 44 as a wellness retreat—transforming obsolete roadside infrastructure into a destination worth visiting again.",
-      images: []
+      images: [
+        "assets/img/work/return-to-flow/01.jpg",
+        "assets/img/work/return-to-flow/02.jpg",
+        "assets/img/work/return-to-flow/03.jpg"
+      ]
     },
     {
       slug: "super-block",
@@ -194,7 +205,11 @@ const SITE = {
       award: "",
       year: 2022,
       desc: "Super Block reimagines the area around Busanjin Station as a large-scale urban park connecting essential neighborhood facilities within a 15-minute walking radius. By linking local nodes through a continuous pedestrian landscape and relocating parking underground, the project transforms a dense neighborhood into a more walkable and connected public realm.",
-      images: []
+      images: [
+        "assets/img/work/super-block/01.jpg",
+        "assets/img/work/super-block/02.jpg",
+        "assets/img/work/super-block/03.jpg"
+      ]
     },
     {
       slug: "scenes-of-the-arcade",
@@ -203,7 +218,13 @@ const SITE = {
       award: "",
       year: 2022,
       desc: "Inspired by the lively urban scenes of the late-Joseon painting Taepyeongseongsido, Scenes of the Arcade reimagines an aging antique art arcade as a contemporary cultural street. Spaces for viewing, learning, making, shopping, and gathering reconnect traditional art with everyday neighborhood life, while a modular kinetic facade allows the arcade to adapt to changing cultural and public programs.",
-      images: []
+      images: [
+        "assets/img/work/scenes-of-the-arcade/01.jpg",
+        "assets/img/work/scenes-of-the-arcade/02.jpg",
+        "assets/img/work/scenes-of-the-arcade/03.jpg",
+        "assets/img/work/scenes-of-the-arcade/04.jpg",
+        "assets/img/work/scenes-of-the-arcade/05.gif"
+      ]
     }
   ],
 

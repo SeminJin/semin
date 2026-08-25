@@ -319,3 +319,65 @@ img{max-width:100%; display:block}
   .sc-path{animation:none}
   .hero-scroll span{animation:none}
 }
+
+/* ============================================================
+   프로젝트 슬라이더 + CV 뷰어
+   ============================================================ */
+.slider{margin:var(--sp-s) 0 var(--sp-m); outline:none}
+.slider:focus-visible .stage{outline:2px solid var(--accent); outline-offset:3px}
+
+.stage{
+  position:relative; background:#fff; border:1px solid var(--line);
+  border-radius:2px; overflow:hidden; aspect-ratio:16/10;
+}
+.slide{position:absolute; inset:0; opacity:0; visibility:hidden; transition:opacity .3s}
+.slide.on{opacity:1; visibility:visible}
+.slide img{width:100%; height:100%; object-fit:contain}
+.slide iframe{width:100%; height:100%; border:0; display:block}
+
+.nav{
+  position:absolute; top:50%; transform:translateY(-50%);
+  appearance:none; cursor:pointer; width:34px; height:34px; border-radius:50%;
+  border:1px solid var(--line); background:color-mix(in srgb,#fff 88%,transparent);
+  color:var(--ink); font-size:1.1rem; line-height:1;
+  display:grid; place-content:center; transition:.16s; opacity:0;
+}
+.stage:hover .nav, .slider:focus-within .nav{opacity:1}
+.nav:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
+.nav.prev{left:10px} .nav.next{right:10px}
+@media (hover:none){.nav{opacity:1}}
+
+.counter{
+  position:absolute; right:10px; bottom:10px;
+  font-family:var(--mono); font-size:.66rem; letter-spacing:.06em;
+  background:color-mix(in srgb,#fff 88%,transparent); color:var(--ink-2);
+  padding:.2rem .5rem; border-radius:2px; border:1px solid var(--line);
+}
+
+.thumbs{display:flex; gap:.4rem; margin-top:.5rem; flex-wrap:wrap}
+.thumb{
+  appearance:none; cursor:pointer; padding:0; width:68px; height:44px;
+  border:1px solid var(--line); border-radius:2px; overflow:hidden;
+  background:#fff; opacity:.55; transition:.16s;
+}
+.thumb img{width:100%; height:100%; object-fit:cover}
+.thumb:hover{opacity:.85}
+.thumb.on{opacity:1; border-color:var(--accent); box-shadow:0 0 0 1px var(--accent)}
+.thumb-play{color:var(--accent); font-size:.9rem}
+
+/* CV */
+.cv-bar{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:var(--sp-s); flex-wrap:wrap; margin-bottom:var(--sp-s);
+}
+.cv-note{color:var(--ink-2); font-size:.82rem; max-width:44ch}
+.cv-view{
+  width:100%; height:min(78vh,900px); border:1px solid var(--line);
+  border-radius:2px; background:#fff; display:block;
+}
+@media (max-width:760px){
+  .cv-view{height:60vh}
+  .thumb{width:56px; height:38px}
+}
+.cv-fallback{font-size:.78rem; color:var(--ink-3); margin:.7rem 0 0; text-align:center}
+.cv-fallback a{color:var(--accent)}

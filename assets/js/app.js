@@ -60,15 +60,41 @@
     },
 
     design() {
-      return SITE.designWork.map(w => `<article class="work">
-        <h3 class="work-title">${w.title}</h3>
-        <p class="work-meta">${w.meta}</p>
-        ${w.award ? `<p class="award">${w.award}</p>` : ''}
-        ${w.images.length
-          ? `<div class="work-gallery">${w.images.map(i => `<img src="${i}" alt="${w.title}" loading="lazy">`).join('')}</div>`
-          : ''}
-        <p class="work-desc">${w.desc}</p>
-      </article>`).join('');
+      return SITE.designWork.map((w, wi) => {
+        const slides = [
+          ...(w.video ? [{ type: 'video', id: w.video }] : []),
+          ...w.images.map(src => ({ type: 'img', src }))
+        ];
+        const stage = slides.map((s, i) => s.type === 'video'
+          ? `<div class="slide${i ? '' : ' on'}" data-i="${i}">
+               <iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${s.id}"
+                 title="${w.title} — video" frameborder="0" allowfullscreen
+                 allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+             </div>`
+          : `<div class="slide${i ? '' : ' on'}" data-i="${i}">
+               <img src="${s.src}" alt="${w.title} ${i + 1}" loading="lazy">
+             </div>`).join('');
+        const thumbs = slides.map((s, i) => s.type === 'video'
+          ? `<button class="thumb${i ? '' : ' on'}" data-i="${i}" aria-label="video">
+               <span class="thumb-play">&#9654;</span></button>`
+          : `<button class="thumb${i ? '' : ' on'}" data-i="${i}" aria-label="image ${i + 1}">
+               <img src="${s.src}" alt="" loading="lazy"></button>`).join('');
+
+        return `<article class="work" data-w="${wi}">
+          <h3 class="work-title">${w.title}</h3>
+          <p class="work-meta">${w.meta}</p>
+          ${w.award ? `<p class="award">${w.award}</p>` : ''}
+          ${slides.length ? `<div class="slider" data-count="${slides.length}">
+            <div class="stage">${stage}
+              <button class="nav prev" aria-label="previous">&#8249;</button>
+              <button class="nav next" aria-label="next">&#8250;</button>
+              <span class="counter">1 / ${slides.length}</span>
+            </div>
+            <div class="thumbs">${thumbs}</div>
+          </div>` : ''}
+          <p class="work-desc">${w.desc}</p>
+        </article>`;
+      }).join('');
     },
 
     teaching() {
@@ -79,12 +105,48 @@
     },
 
     cv() {
-      return `<p style="color:var(--ink-2);max-width:52ch;margin:0 0 2rem">
-          Full curriculum vitae including education, publications, patents, teaching, awards, and academic service.
-        </p>
-        <a class="btn" href="${SITE.cv}" target="_blank" rel="noopener">Download Full CV (PDF) &rarr;</a>`;
+      return `<div class="cv-bar">
+          <span class="cv-note">Education, publications, patents, teaching, awards, and academic service.</span>
+          <a class="btn" href="${SITE.cv}" download>Download PDF &darr;</a>
+        </div>
+        <iframe class="cv-view" src="${SITE.cv}#view=FitH&toolbar=0"
+                title="Semin Jin — Curriculum Vitae" loading="lazy"></iframe>
+        <p class="cv-fallback">
+          PDF가 보이지 않나요? <a href="${SITE.cv}" target="_blank" rel="noopener">새 탭에서 열기 &rarr;</a>
+        </p>`;
     }
   };
+
+  /* ---------- 슬라이더 ---------- */
+  function bindSliders(root) {
+    root.querySelectorAll('.slider').forEach(sl => {
+      const slides = [...sl.querySelectorAll('.slide')];
+      const thumbs = [...sl.querySelectorAll('.thumb')];
+      const counter = sl.querySelector('.counter');
+      let cur = 0;
+
+      const go = i => {
+        cur = (i + slides.length) % slides.length;
+        slides.forEach((s, n) => s.classList.toggle('on', n === cur));
+        thumbs.forEach((t, n) => t.classList.toggle('on', n === cur));
+        counter.textContent = `${cur + 1} / ${slides.length}`;
+        // 보이지 않는 슬라이드의 영상은 정지
+        slides.forEach((s, n) => {
+          const f = s.querySelector('iframe');
+          if (f && n !== cur) f.src = f.src;
+        });
+      };
+
+      thumbs.forEach((t, i) => t.addEventListener('click', () => go(i)));
+      sl.querySelector('.prev').addEventListener('click', () => go(cur - 1));
+      sl.querySelector('.next').addEventListener('click', () => go(cur + 1));
+      sl.setAttribute('tabindex', '0');
+      sl.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); go(cur - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      });
+    });
+  }
 
   /* ---------- 탭 전환 ---------- */
   function activate(key, push) {
@@ -99,6 +161,7 @@
 
     const host = $('#panel');
     host.innerHTML = panels[key] ? panels[key]() : '';
+    if (key === 'design') bindSliders(host);
     host.className = 'panel is-active';
     if (push && location.hash.slice(1) !== key) history.replaceState(null, '', '#' + key);
   }
