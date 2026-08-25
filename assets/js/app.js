@@ -29,7 +29,8 @@
     publication() {
       return SITE.publications.map(p => {
         const thumb = p.thumb
-          ? `<img class="pub-thumb" src="${p.thumb}" alt="" loading="lazy">`
+          ? `<img class="pub-thumb${p.gif ? ' has-gif' : ''}" src="${p.thumb}"
+                  ${p.gif ? `data-gif="${p.gif}"` : ''} alt="" loading="lazy">`
           : `<div class="pub-thumb empty">FIGURE</div>`;
         return `<article class="pub">
           <div>${thumb}</div>
@@ -121,6 +122,25 @@
     }
   };
 
+  /* ---------- 논문 썸네일: 호버할 때만 GIF 로드 ---------- */
+  function bindThumbs(root) {
+    root.querySelectorAll('.pub-thumb.has-gif').forEach(img => {
+      const still = img.getAttribute('src'), gif = img.dataset.gif;
+      let loaded = false;
+      const play = () => {
+        if (!loaded) {                         // 최초 1회만 네트워크 요청
+          const pre = new Image();
+          pre.onload = () => { loaded = true; if (img.matches(':hover')) img.src = gif; };
+          pre.src = gif;
+        } else img.src = gif;
+        img.classList.add('playing');
+      };
+      const stop = () => { img.src = still; img.classList.remove('playing'); };
+      img.addEventListener('mouseenter', play);
+      img.addEventListener('mouseleave', stop);
+    });
+  }
+
   /* ---------- 슬라이더 ---------- */
   function bindSliders(root) {
     root.querySelectorAll('.slider').forEach(sl => {
@@ -169,6 +189,7 @@
     const host = $('#panel');
     host.innerHTML = panels[key] ? panels[key]() : '';
     if (key === 'design') bindSliders(host);
+    if (key === 'publication') bindThumbs(host);
     host.className = 'panel is-active';
     if (push && location.hash.slice(1) !== key) history.replaceState(null, '', '#' + key);
   }

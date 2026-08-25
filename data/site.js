@@ -38,10 +38,10 @@ const SITE = {
     {
       tags: ["experiential"],
       title: "Workflow-Net: Toward Understanding Designer Workflows in Generative AI-Driven Systems through Comparing Node- and Prompt-Based Interfaces",
+      thumb: "assets/img/research_thumbs/workflow-net.jpg",
       venue: "Archives of Design Research", year: 2026, detail: "39(2): 7–34",
       authors: "Tae Hee Jo, Jiin Choi, <b>Semin Jin</b>, Seung Won Lee, Yugyeong Jang, Sang Woon Park, Seonghoon Ban, Kyung Hoon Hyun",
       index: "SCOPUS", field: "Computer-Aided Design; Architecture",
-      thumb: "assets/img/workflow-net.jpg",
       links: [
         { label: "html", url: "https://doi.org/10.15187/adr.2026.05.39.2.7" },
         { label: "pdf",  url: "https://aodr.org/xml/49535/49535.pdf" }
@@ -50,6 +50,8 @@ const SITE = {
     {
       tags: ["spatial"],
       title: "Behavior-Aware Anthropometric Scene Generation for Human-Usable 3D Layouts",
+      thumb: "assets/img/research_thumbs/chi2026.jpg",
+      gif: "assets/img/research_thumbs/chi2026.gif",
       venue: "ACM CHI 2026 Paper", year: 2026, detail: "Barcelona, Spain",
       authors: "<b>Semin Jin</b>, Donghyuk Kim, Jeongmin Ryu, Kyung Hoon Hyun",
       index: "~SCIE TOP-TIER", field: "BKCSA003, h5-index=139",
@@ -62,6 +64,8 @@ const SITE = {
     {
       tags: ["spatial"],
       title: "Human-operational 3D Indoor Layout Generation with LLM-Driven Anthropometric Simulation",
+      thumb: "assets/img/research_thumbs/human-operational.jpg",
+      gif: "assets/img/research_thumbs/human-operational.gif",
       venue: "Automation in Construction", year: 2026, detail: "",
       authors: "<b>Semin Jin</b>, Kyung Hoon Hyun",
       index: "SCIE TOP 1%", field: "Construction & Building Technology, IF=11.5",
@@ -75,6 +79,7 @@ const SITE = {
     {
       tags: ["perceptual", "experiential"],
       title: "Blending Designer Insights With Predicted Crowd-Based Color Compatibility in Interior Color Design",
+      thumb: "assets/img/research_thumbs/color-aesthetic.jpg",
       venue: "Color Research & Application", year: 2026, detail: "",
       authors: "<b>Semin Jin</b>, Kyung Hoon Hyun",
       index: "SCIE", field: "Chemistry, Applied; Optics, IF=1.4",
@@ -87,6 +92,7 @@ const SITE = {
     {
       tags: ["perceptual"],
       title: "An Explainable AI-based Approach for Identifying Interior Design Style Principles",
+      thumb: "assets/img/research_thumbs/explainable.jpg",
       venue: "Advanced Engineering Informatics", year: 2026, detail: "",
       authors: "Jaehyun Seo, <b>Semin Jin</b>, Kyungah Choi, Kyung Hoon Hyun, Junegak Joung",
       index: "SCIE TOP 2%", field: "Computer Science, Artificial Intelligence; Multidisciplinary, IF=9.9",
@@ -97,6 +103,8 @@ const SITE = {
     {
       tags: ["perceptual"],
       title: "CMLsearch: Semantic Visual Search and Simulation through Segmented Colour, Material, and Lighting in Interior Image",
+      thumb: "assets/img/research_thumbs/cmlsearch.jpg",
+      gif: "assets/img/research_thumbs/cmlsearch.gif",
       venue: "Journal of Computational Design and Engineering", year: 2025, detail: "",
       authors: "<b>Semin Jin</b>, Jiin Choi, Kyung Hoon Hyun",
       index: "SCIE", field: "Computer Science, Artificial Intelligence; Engineering, Multidisciplinary, IF=4.9",
@@ -109,6 +117,8 @@ const SITE = {
     {
       tags: ["experiential"],
       title: "The Impact of Sketch-guided vs. Prompt-guided 3D Generative AIs on the Design Exploration Process",
+      thumb: "assets/img/research_thumbs/sketch.jpg",
+      gif: "assets/img/research_thumbs/sketch.gif",
       venue: "ACM CHI 2024 Paper", year: 2024, detail: "Honolulu, USA",
       authors: "Seung Won Lee, Tae Hee Joo, <b>Semin Jin</b>, Jiin Choi, Kyungwon Yun, Sergio Bromberg, Seonghoon Ban, Kyung Hoon Hyun",
       index: "~SCIE TOP-TIER", field: "BKCSA003, h5-index=113",
@@ -120,6 +130,7 @@ const SITE = {
     {
       tags: ["perceptual", "experiential"],
       title: "Enhancing the Interior Design Process with Crowdsourced Furnishing Pairing Recommendations",
+      thumb: "assets/img/research_thumbs/associationrule.jpg",
       venue: "Archives of Design Research", year: 2024, detail: "",
       authors: "<b>Semin Jin</b>, Kyung Hoon Hyun",
       index: "SCOPUS", field: "", award: "🏆 EXCELLENCE AWARD",

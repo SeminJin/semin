@@ -447,3 +447,8 @@ img{max-width:100%; display:block}
 }
 .cap-text{font-size:.82rem; line-height:1.6; color:var(--ink-2); max-width:64ch; margin:0}
 @media (max-width:760px){.caps{min-height:9rem}}
+
+/* 논문 썸네일 — 호버하면 움직임 */
+.pub-thumb.has-gif{cursor:zoom-in; transition:box-shadow .18s, transform .18s}
+.pub-thumb.has-gif:hover{box-shadow:0 4px 14px rgba(0,0,0,.13); transform:translateY(-1px)}
+.pub-thumb.has-gif::after{content:""}
