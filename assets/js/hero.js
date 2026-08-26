@@ -44,23 +44,30 @@
       </div>`;
   }
 
-  /* ---------- 모듈러 수평 그리드 (히어로 전체) ---------- */
+  /* ---------- 모듈러 수평 그리드 (레일 눈금과 정렬) ---------- */
   const heroEl = document.querySelector('.hero');
-  if (heroEl && !heroEl.querySelector('.hero-grid')) {
-    const g = document.createElement('div');
-    g.className = 'hero-grid';
-    g.setAttribute('aria-hidden', 'true');
-    /* 노드 위치 + 각 구간의 중점까지 그어 눈금을 촘촘하게 */
+  let gridEl = null;
+  if (heroEl) {
+    gridEl = document.createElement('div');
+    gridEl.className = 'hero-grid';
+    gridEl.setAttribute('aria-hidden', 'true');
+    heroEl.prepend(gridEl);
+  }
+  function drawGrid() {
+    if (!gridEl || !heroEl) return;
+    const hr = heroEl.getBoundingClientRect();
+    const rr = rail.getBoundingClientRect();
+    const top = rr.top - hr.top, H = rr.height;
     const ticks = [];
     M.pos.forEach((p, i) => {
-      ticks.push({ p, major: true });
-      if (M.seg[i]) ticks.push({ p: p + M.seg[i] / 2, major: false });
+      ticks.push({ y: top + p * H, major: true });
+      if (M.seg[i]) ticks.push({ y: top + (p + M.seg[i] / 2) * H, major: false });
     });
-    ticks.push({ p: 1, major: true });
-    g.innerHTML = ticks.map(t =>
-      `<span class="grid-line${t.major ? ' major' : ''}" style="top:${(t.p * 100).toFixed(3)}%"></span>`
-    ).join('');
-    heroEl.prepend(g);
+    ticks.push({ y: top + H, major: true });
+    gridEl.innerHTML = ticks
+      .filter(t => t.y >= 0 && t.y <= hr.height)
+      .map(t => `<span class="grid-line${t.major ? ' major' : ''}" style="top:${t.y.toFixed(1)}px"></span>`)
+      .join('');
   }
 
   /* ---------- 가운데 레일 ---------- */
@@ -76,7 +83,8 @@
       <button class="lens-node" role="tab" data-i="${i}" data-axis="${l.key}"
               style="top:${(M.pos[i] * 100).toFixed(3)}%"
               aria-selected="${i === 0}" aria-label="${l.key} — ${l.project}"
-              title="${l.project}"><span class="node-dot"></span></button>`).join('')}`;
+              title="${l.project}"><span class="node-dot"></span>
+        <span class="node-tick">${(Math.pow(1 / PHI, i)).toFixed(3)}</span></button>`).join('')}`;
 
   stage.innerHTML = L.map((l, i) => `
     <article class="lens-panel${l.transparent ? ' is-cutout' : ''}${i ? ' after' : ' on'}"
@@ -96,11 +104,18 @@
     </li>`).join('');
 
   /* ---------- 모듈러 잎 수열 ----------
-     각 구간을 현(chord)으로 삼고, 활꼴 높이는 현의 0.11배.
-     레퍼런스처럼 수직선 양쪽으로 대칭인 렌즈가 되고, 면을 채운다.  */
+     오른쪽 잎은 구간 그대로, 왼쪽 잎은 반 칸 아래로 어긋나 엮인다.
+     활꼴 높이는 현의 0.10배 — 레퍼런스의 납작한 렌즈.          */
   const svg = rail.querySelector('.rail-arcs');
   const NS = 'http://www.w3.org/2000/svg';
-  const BOW = 0.11;                       // 활꼴높이 / 현
+  const BOW = 0.10;
+
+  function leafPath(cx, y0, y1, sweep) {
+    const h = y1 - y0;
+    const bow = Math.max(1.5, h * BOW);
+    const R = (bow * bow + (h / 2) * (h / 2)) / (2 * bow);
+    return `M ${cx} ${y0} A ${R} ${R} 0 0 ${sweep} ${cx} ${y1} Z`;
+  }
 
   function drawArcs() {
     const r = rail.getBoundingClientRect();
@@ -110,34 +125,35 @@
     svg.setAttribute('height', H);
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     svg.innerHTML =
-      `<defs><pattern id="hatch" width="4" height="3" patternUnits="userSpaceOnUse">
-         <line x1="0" y1="0" x2="4" y2="0" stroke="currentColor" stroke-width=".5"/>
+      `<defs><pattern id="hatch" width="3" height="2.4" patternUnits="userSpaceOnUse">
+         <line x1="0" y1="0" x2="3" y2="0" stroke="currentColor" stroke-width=".45"/>
        </pattern></defs>`;
     const cx = W / 2;
 
     M.seg.forEach((sg, i) => {
-      const y0 = M.pos[i] * H;
-      const h  = sg * H;
-      const y1 = y0 + h;
-      const bow = Math.max(2, h * BOW);
-      const R = (bow * bow + (h / 2) * (h / 2)) / (2 * bow);   // 현+활꼴높이 → 반지름
+      const y0 = M.pos[i] * H, h = sg * H;
       const g = document.createElementNS(NS, 'g');
       g.setAttribute('class', 'leaf' + (i === cur ? ' on' : ''));
       g.dataset.i = i;
-      [['r', 1], ['l', 0]].forEach(([side, sweep]) => {
-        const d = `M ${cx} ${y0} A ${R} ${R} 0 0 ${sweep} ${cx} ${y1} Z`;
-        const p = document.createElementNS(NS, 'path');
-        p.setAttribute('d', d);
-        p.setAttribute('class', 'half ' + side);
-        g.appendChild(p);
-        const hp = document.createElementNS(NS, 'path');   // 해칭 겹layer
-        hp.setAttribute('d', d);
-        hp.setAttribute('class', 'hatch ' + side);
-        hp.setAttribute('fill', 'url(#hatch)');
-        g.appendChild(hp);
-      });
+
+      /* 오른쪽 — 구간 그대로 */
+      addHalf(g, leafPath(cx, y0, y0 + h, 1), 'r');
+      /* 왼쪽 — 반 칸 아래로 어긋남 */
+      const ly0 = Math.min(H, y0 + h / 2), ly1 = Math.min(H, ly0 + h);
+      if (ly1 - ly0 > 4) addHalf(g, leafPath(cx, ly0, ly1, 0), 'l');
+
       svg.appendChild(g);
     });
+
+    function addHalf(g, d, side) {
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', d); p.setAttribute('class', 'half ' + side);
+      g.appendChild(p);
+      const hp = document.createElementNS(NS, 'path');
+      hp.setAttribute('d', d); hp.setAttribute('class', 'hatch ' + side);
+      hp.setAttribute('fill', 'url(#hatch)');
+      g.appendChild(hp);
+    }
   }
 
   const nodes  = [...rail.querySelectorAll('.lens-node')];
@@ -175,7 +191,7 @@
     if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  { e.preventDefault(); go(cur - 1); }
   });
 
-  drawArcs(); apply();
-  if (window.ResizeObserver) new ResizeObserver(() => { drawArcs(); apply(); }).observe(rail);
-  else addEventListener('resize', () => { drawArcs(); apply(); });
+  drawArcs(); drawGrid(); apply();
+  if (window.ResizeObserver) new ResizeObserver(() => { drawArcs(); drawGrid(); apply(); }).observe(rail);
+  else addEventListener('resize', () => { drawArcs(); drawGrid(); apply(); });
 })();
