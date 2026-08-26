@@ -90,7 +90,7 @@ const SITE = {
     {
       tags: ["spatial"],
       title: "Behavior-Aware Anthropometric Scene Generation for Human-Usable 3D Layouts",
-      thumb: "assets/img/hero/spatial.webp",
+      thumb: "assets/img/research_thumbs/chi2026-poster.webp",
       venue: "ACM CHI 2026 Paper", year: 2026, detail: "Barcelona, Spain",
       authors: "<b>Semin Jin</b>, Donghyuk Kim, Jeongmin Ryu, Kyung Hoon Hyun",
       index: "~SCIE TOP-TIER", field: "BKCSA003, h5-index=139",
@@ -103,7 +103,7 @@ const SITE = {
     {
       tags: ["spatial"],
       title: "Human-operational 3D Indoor Layout Generation with LLM-Driven Anthropometric Simulation",
-      thumb: "assets/img/research_thumbs/human-operational.webp",
+      thumb: "assets/img/hero/spatial-2.webp",
       venue: "Automation in Construction", year: 2026, detail: "",
       authors: "<b>Semin Jin</b>, Kyung Hoon Hyun",
       index: "SCIE TOP 1%", field: "Construction & Building Technology, IF=11.5",

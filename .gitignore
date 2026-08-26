@@ -2,3 +2,6 @@
 .claude/
 _src/
 _tmpvid/
+
+# 원본 소스는 assets 안에 두지 않는다 (배포 용량 방어)
+assets/**/[[]CHI*
