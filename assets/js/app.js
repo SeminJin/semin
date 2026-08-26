@@ -195,6 +195,16 @@
     if (key === 'design') bindSliders(host);
     host.className = 'panel is-active';
     if (push && location.hash.slice(1) !== key) history.replaceState(null, '', '#' + key);
+
+    /* 탭도 하나의 화면으로 기록 — 해시만 바뀌면 GA가 잡지 못한다 */
+    if (push && typeof gtag === 'function') {
+      const label = { publication: 'Publication', patent: 'Patent', design: 'Design Work',
+                      teaching: 'Teaching & Academic Service', cv: 'CV' }[key] || key;
+      gtag('event', 'page_view', {
+        page_title: 'Semin Jin — ' + label,
+        page_location: location.origin + location.pathname + '#' + key
+      });
+    }
   }
 
   function init() {
