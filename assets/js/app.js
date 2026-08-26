@@ -4,47 +4,50 @@
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h != null) n.innerHTML = h; return n; };
   const links = (arr) => arr.map(l => `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join(' | ');
 
-  /* ---------- 사이드바 ---------- */
-  function renderSide() {
-    const host = $('#side'); if (!host) return;
-    const lab = SITE.labs.map(l => l.url ? `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>` : l.label).join(' and ');
-    host.innerHTML = `
-      <h2>${SITE.name}</h2>
-      <p>I'm a <b>${SITE.role}</b> at ${SITE.affiliation}, affiliated with the ${lab}.</p>
-      <p>My research focuses on <b>${SITE.thesis}</b>. I explore this at three levels:</p>
-      <div class="levels">
-        ${SITE.levels.map(l => `<div><div class="level-name">${l.label}</div><div class="level-desc">${l.desc}</div></div>`).join('')}
-      </div>
-      <div class="news">
-        <div class="news-h">New !</div>
-        <ul>${SITE.news.map(n => `<li><span class="d">[${n.date}]</span> ${n.text}</li>`).join('')}</ul>
-      </div>
-      <div class="contact">
+  /* ---------- 마스트헤드: 소개 + News (상단) ---------- */
+  function renderMasthead() {
+    const lab = SITE.labs
+      .map(l => l.url ? `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>` : l.label)
+      .join(' and ');
+
+    const bio = $('#mast-bio');
+    if (bio) bio.innerHTML = `
+      <p class="mast-intro">
+        <b>${SITE.role}</b> at ${SITE.affiliation},
+        affiliated with the ${lab}.
+      </p>
+      <div class="mast-links">
         ${SITE.contact.map(c => `<a href="${c.url}" target="_blank" rel="noopener">${c.label}</a>`).join('')}
       </div>`;
+
+    const news = $('#mast-news');
+    if (news) news.innerHTML = `
+      <div class="news-h">New !</div>
+      <ul>${SITE.news.map(n => `<li><span class="d">${n.date}</span><span class="t">${n.text}</span></li>`).join('')}</ul>`;
   }
 
   /* ---------- 패널 ---------- */
   const panels = {
     publication() {
       return SITE.publications.map(p => {
-        const thumb = p.thumb
+        const media = p.thumb
           ? `<img class="pub-thumb${p.gif ? ' has-gif' : ''}" src="${p.thumb}"
-                  ${p.gif ? `data-gif="${p.gif}"` : ''} alt="" loading="lazy">`
+                  ${p.gif ? `data-gif="${p.gif}"` : ''} alt="" loading="lazy">
+             ${p.gif ? '<span class="pub-play">Hover to play</span>' : ''}`
           : `<div class="pub-thumb empty">FIGURE</div>`;
         return `<article class="pub">
-          <div>${thumb}</div>
-          <div>
-            <div>${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+          <figure class="pub-media">${media}</figure>
+          <div class="pub-body">
+            <div class="pub-tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
             <h3 class="pub-title">${p.title}</h3>
             <p class="pub-venue">${p.venue}, ${p.year}${p.detail ? ' &middot; ' + p.detail : ''}</p>
             <p class="pub-authors">${p.authors}</p>
             <div class="pub-links">${links(p.links)}</div>
-          </div>
-          <div class="pub-meta">
-            <span class="badge">${p.index}</span>
-            ${p.award ? `<div class="award">${p.award}</div>` : ''}
-            <div>${p.field || ''}</div>
+            <div class="pub-meta">
+              <span class="badge">${p.index}</span>
+              ${p.award ? `<span class="award">${p.award}</span>` : ''}
+              ${p.field ? `<span class="pub-field">${p.field}</span>` : ''}
+            </div>
           </div>
         </article>`;
       }).join('');
@@ -196,7 +199,7 @@
 
   function init() {
     if (typeof SITE === 'undefined') { console.error('site.js 로드 실패'); return; }
-    renderSide();
+    renderMasthead();
     document.querySelectorAll('.tab').forEach(t =>
       t.addEventListener('click', () => activate(t.dataset.panel, true)));
     window.addEventListener('hashchange', () => activate(location.hash.slice(1) || 'publication', false));

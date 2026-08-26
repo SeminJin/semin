@@ -4,42 +4,45 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Semin Jin</title>
-<meta name="description" content="Semin Jin — Post-doctoral researcher in Interior Architecture Design at Hanyang University. Human-AI Collaboration in Design.">
+<meta name="description" content="Semin Jin — Post-doctoral researcher in Interior Architecture Design at Hanyang University. AI design computing and human-centered design evaluation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=202608261343">
 </head>
 <body>
 
 <!-- ══════════════════════════════════════════════════
-     HERO — Anthropometric Scene Generator
+     HERO — 실제 연구 프로젝트 미디어
      ══════════════════════════════════════════════════ -->
 <header class="hero">
   <div class="hero-text">
-    <p class="hero-eyebrow">Designer &times; Researcher</p>
+    <p class="hero-eyebrow">AI Design Computing &amp;<br>Human-Centered Design Evaluation</p>
     <h1 class="hero-name">Semin<br><em>Jin</em></h1>
     <p class="hero-lede">I design how people and machines shape space together.</p>
-    <p class="hero-sub">
-      Post-doctoral researcher in <b>Interior Architecture Design</b> at Hanyang University,
-      working on <b>Human&ndash;AI Collaboration in Design</b> &mdash; spatial, perceptual, and experiential.
-    </p>
     <nav class="lens" role="tablist" aria-label="research lens">
-      <button class="lens-btn" role="tab" aria-selected="true">Spatial</button>
-      <button class="lens-btn" role="tab" aria-selected="false">Perceptual</button>
-      <button class="lens-btn" role="tab" aria-selected="false">Experiential</button>
+      <button class="lens-btn" role="tab" data-lens="spatial"      aria-selected="true">Spatial</button>
+      <button class="lens-btn" role="tab" data-lens="perceptual"   aria-selected="false">Perceptual</button>
+      <button class="lens-btn" role="tab" data-lens="experiential" aria-selected="false">Experiential</button>
     </nav>
     <p class="lens-desc" id="lens-desc"></p>
     <a class="hero-scroll" href="#publication">Research <span>&darr;</span></a>
   </div>
-  <div class="hero-scene">
-    <div class="turntable" id="turntable" role="img"
-         aria-label="Three isometric rooms showing spatial, perceptual and experiential research"></div>
-  </div>
+  <div class="hero-scene" id="hero-scene"></div>
 </header>
 
 <!-- ══════════════════════════════════════════════════
-     탭 — 기존 사이트 내용
+     MASTHEAD — 소개 + News (기존 우측 사이드바에서 승격)
+     ══════════════════════════════════════════════════ -->
+<section class="masthead">
+  <div class="wrap masthead-inner">
+    <div class="mast-bio"  id="mast-bio"></div>
+    <div class="mast-news" id="mast-news"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     TABS
      ══════════════════════════════════════════════════ -->
 <nav class="tabs">
   <div class="tabs-inner" role="tablist">
@@ -52,14 +55,11 @@
 </nav>
 
 <div class="wrap">
-  <div class="layout">
-    <main id="panel" class="panel is-active"></main>
-    <aside id="side" class="side"></aside>
-  </div>
+  <main id="panel" class="panel is-active"></main>
 </div>
 
-<script src="assets/js/scene.js"></script>
-<script src="data/site.js"></script>
-<script src="assets/js/app.js"></script>
+<script src="data/site.js?v=202608261343"></script>
+<script src="assets/js/hero.js?v=202608261343"></script>
+<script src="assets/js/app.js?v=202608261343"></script>
 </body>
 </html>

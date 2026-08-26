@@ -17,6 +17,43 @@ const SITE = {
     { key: "experiential", label: "Experiential", desc: "Designer experience in human-AI collaboration" }
   ],
 
+  /* 히어로 — 실제 프로젝트 소스로 구성한 세 렌즈 */
+  heroLens: [
+    {
+      key: "spatial",
+      desc: "Behaviour-aware layout generation. Body dimensions become the unit of the plan \u2014 shoulder breadth, forward reach, and the clearance a person needs to actually use a room.",
+      project: "Behavior-Aware Anthropometric Scene Generation",
+      venue: "ACM CHI 2026",
+      main: "assets/img/hero/spatial.jpg",
+      alt: "assets/img/hero/spatial-alt.jpg",
+      motion: "assets/img/research_thumbs/chi2026.gif",
+      still: "assets/img/research_thumbs/chi2026.jpg",
+      href: "https://kindohyoku.github.io/BehaviorAware/"
+    },
+    {
+      key: "perceptual",
+      desc: "Crowd-based colour compatibility. The same room re-coloured and scored \u2014 saliency, harmony, and the palettes a crowd actually prefers.",
+      project: "Blending Designer Insights with Crowd-Based Colour Compatibility",
+      venue: "Color Research & Application 2026",
+      main: "assets/img/hero/perceptual.jpg",
+      alt: "",
+      motion: "assets/img/research_thumbs/cmlsearch.gif",
+      still: "assets/img/research_thumbs/cmlsearch.jpg",
+      href: "https://seminjin.github.io/crowdbasedICE/"
+    },
+    {
+      key: "experiential",
+      desc: "Designer\u2013AI collaboration. One intent diverges into arrangements; the designer keeps the one that holds.",
+      project: "Workflow-Net \u2014 Node- vs. Prompt-Based Interfaces",
+      venue: "Archives of Design Research 2026",
+      main: "assets/img/hero/experiential.jpg",
+      alt: "",
+      motion: "assets/img/research_thumbs/sketch.gif",
+      still: "assets/img/research_thumbs/sketch.jpg",
+      href: "https://doi.org/10.15187/adr.2026.05.39.2.7"
+    }
+  ],
+
   contact: [
     { label: "seminijin@gmail.com",   url: "mailto:seminijin@gmail.com" },
     { label: "semini@hanyang.ac.kr",  url: "mailto:semini@hanyang.ac.kr" },
@@ -217,9 +254,9 @@ const SITE = {
       year: 2022,
       desc: "Super Block reimagines the area around Busanjin Station as a large-scale urban park connecting essential neighborhood facilities within a 15-minute walking radius. By linking local nodes through a continuous pedestrian landscape and relocating parking underground, the project transforms a dense neighborhood into a more walkable and connected public realm.",
       slides: [
+        { src: "assets/img/work/super-block/03.jpg", title: "Park as Urban Infrastructure", text: "The resulting landscape operates as more than a conventional park. It becomes a piece of urban infrastructure that integrates mobility, public programs, neighborhood facilities, and everyday recreation within a single continuous system. By relocating parking underground and prioritizing pedestrian movement above, Super Block creates a greener and more walkable public realm for a dense and long-established neighborhood." },
         { src: "assets/img/work/super-block/01.jpg", title: "A 15-Minute Neighborhood Park", text: "Super Block proposes a large-scale urban park around Busanjin Station, connecting essential neighborhood facilities within a 15-minute walking radius. Schools, community offices, health centers, and cultural facilities become key local nodes, while the area between them is reorganized as a continuous public landscape. By placing everyday destinations within a shared pedestrian network, the project transforms a fragmented neighborhood into a more accessible and connected urban environment." },
-        { src: "assets/img/work/super-block/02.jpg", title: "Connecting Urban Nodes", text: "The masterplan organizes the neighborhood around a central public landscape, from which pedestrian routes extend radially toward surrounding community facilities. These connections shorten everyday travel between key destinations while creating a clear spatial network through the park. Below ground, a large shared parking structure absorbs neighborhood parking demand and reduces surface congestion, allowing the ground level to be reclaimed for pedestrians and public space." },
-        { src: "assets/img/work/super-block/03.jpg", title: "Park as Urban Infrastructure", text: "The resulting landscape operates as more than a conventional park. It becomes a piece of urban infrastructure that integrates mobility, public programs, neighborhood facilities, and everyday recreation within a single continuous system. By relocating parking underground and prioritizing pedestrian movement above, Super Block creates a greener and more walkable public realm for a dense and long-established neighborhood." }
+        { src: "assets/img/work/super-block/02.jpg", title: "Connecting Urban Nodes", text: "The masterplan organizes the neighborhood around a central public landscape, from which pedestrian routes extend radially toward surrounding community facilities. These connections shorten everyday travel between key destinations while creating a clear spatial network through the park. Below ground, a large shared parking structure absorbs neighborhood parking demand and reduces surface congestion, allowing the ground level to be reclaimed for pedestrians and public space." }
       ]
     },
     {
