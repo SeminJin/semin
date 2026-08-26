@@ -27,13 +27,13 @@
       .join(' and ');
     text.innerHTML = `
       <div class="id-block">
-        <p class="hero-eyebrow">AI Design Computing &amp;<br>Human-Centered Design Evaluation</p>
+        <p class="hero-eyebrow"><span>AI Design Computing &amp;</span><span>Human-Centered Design Evaluation</span></p>
         <h1 class="hero-name">Semin<br><em>Jin</em></h1>
       </div>
       <div class="who-block">
         <p class="hero-bio"><b>${SITE.role}</b> at ${SITE.affiliation}, affiliated with the ${lab}.</p>
         <div class="hero-contact">
-          ${SITE.contact.map(c =>
+          ${SITE.contact.filter(c => c.label !== 'GitHub').map(c =>
             `<a href="${c.url}" target="_blank" rel="noopener">${c.label}</a>`).join('')}
         </div>
       </div>
@@ -42,6 +42,25 @@
         <ul>${SITE.news.map(n =>
           `<li><span class="d">${n.date}</span><span class="t">${n.text}</span></li>`).join('')}</ul>
       </div>`;
+  }
+
+  /* ---------- 모듈러 수평 그리드 (히어로 전체) ---------- */
+  const heroEl = document.querySelector('.hero');
+  if (heroEl && !heroEl.querySelector('.hero-grid')) {
+    const g = document.createElement('div');
+    g.className = 'hero-grid';
+    g.setAttribute('aria-hidden', 'true');
+    /* 노드 위치 + 각 구간의 중점까지 그어 눈금을 촘촘하게 */
+    const ticks = [];
+    M.pos.forEach((p, i) => {
+      ticks.push({ p, major: true });
+      if (M.seg[i]) ticks.push({ p: p + M.seg[i] / 2, major: false });
+    });
+    ticks.push({ p: 1, major: true });
+    g.innerHTML = ticks.map(t =>
+      `<span class="grid-line${t.major ? ' major' : ''}" style="top:${(t.p * 100).toFixed(3)}%"></span>`
+    ).join('');
+    heroEl.prepend(g);
   }
 
   /* ---------- 가운데 레일 ---------- */
@@ -76,9 +95,13 @@
       <span class="axis-desc">${a.desc}</span>
     </li>`).join('');
 
-  /* ---------- 원호 수열: 구간 길이를 지름으로 ---------- */
+  /* ---------- 모듈러 잎 수열 ----------
+     각 구간을 현(chord)으로 삼고, 활꼴 높이는 현의 0.11배.
+     레퍼런스처럼 수직선 양쪽으로 대칭인 렌즈가 되고, 면을 채운다.  */
   const svg = rail.querySelector('.rail-arcs');
   const NS = 'http://www.w3.org/2000/svg';
+  const BOW = 0.11;                       // 활꼴높이 / 현
+
   function drawArcs() {
     const r = rail.getBoundingClientRect();
     const W = r.width, H = r.height;
@@ -86,19 +109,34 @@
     svg.setAttribute('width', W);
     svg.setAttribute('height', H);
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    svg.innerHTML = '';
+    svg.innerHTML =
+      `<defs><pattern id="hatch" width="4" height="3" patternUnits="userSpaceOnUse">
+         <line x1="0" y1="0" x2="4" y2="0" stroke="currentColor" stroke-width=".5"/>
+       </pattern></defs>`;
     const cx = W / 2;
-    M.seg.forEach((s, i) => {
+
+    M.seg.forEach((sg, i) => {
       const y0 = M.pos[i] * H;
-      const h  = s * H;
-      const rad = h / 2;
-      const side = i % 2 ? -1 : 1;                 // 좌우 번갈아
-      const p = document.createElementNS(NS, 'path');
-      p.setAttribute('d',
-        `M ${cx} ${y0} A ${rad} ${rad} 0 0 ${side > 0 ? 1 : 0} ${cx} ${y0 + h}`);
-      p.setAttribute('class', 'arc' + (i === cur ? ' on' : ''));
-      p.dataset.i = i;
-      svg.appendChild(p);
+      const h  = sg * H;
+      const y1 = y0 + h;
+      const bow = Math.max(2, h * BOW);
+      const R = (bow * bow + (h / 2) * (h / 2)) / (2 * bow);   // 현+활꼴높이 → 반지름
+      const g = document.createElementNS(NS, 'g');
+      g.setAttribute('class', 'leaf' + (i === cur ? ' on' : ''));
+      g.dataset.i = i;
+      [['r', 1], ['l', 0]].forEach(([side, sweep]) => {
+        const d = `M ${cx} ${y0} A ${R} ${R} 0 0 ${sweep} ${cx} ${y1} Z`;
+        const p = document.createElementNS(NS, 'path');
+        p.setAttribute('d', d);
+        p.setAttribute('class', 'half ' + side);
+        g.appendChild(p);
+        const hp = document.createElementNS(NS, 'path');   // 해칭 겹layer
+        hp.setAttribute('d', d);
+        hp.setAttribute('class', 'hatch ' + side);
+        hp.setAttribute('fill', 'url(#hatch)');
+        g.appendChild(hp);
+      });
+      svg.appendChild(g);
     });
   }
 
@@ -118,8 +156,8 @@
     });
     nodes.forEach((n, i) => n.setAttribute('aria-selected', i === cur));
     axes.forEach(a => a.classList.toggle('on', a.dataset.axis === axis));
-    svg.querySelectorAll('.arc').forEach(p =>
-      p.classList.toggle('on', +p.dataset.i === cur));
+    svg.querySelectorAll('.leaf').forEach(g =>
+      g.classList.toggle('on', +g.dataset.i === cur));
     if (fill) fill.style.transform = `scaleY(${M.pos[cur]})`;
   }
   const go = i => { cur = (i + L.length) % L.length; apply(); };
