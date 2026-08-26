@@ -308,17 +308,34 @@
       step(down);
     }, { passive: false });
 
-    let ty = null;
-    addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
-    addEventListener('touchmove', e => {
-      if (ty === null || isNarrow() || scrollY > 2) return;
-      const dy = ty - e.touches[0].clientY;
-      if (Math.abs(dy) < 48) return;
-      const down = dy > 0;
-      if ((down && cur >= L.length - 1) || (!down && cur <= 0)) return;
-      e.preventDefault(); ty = e.touches[0].clientY;
-      if (!lock) step(down);
+    /* 모바일: 가로 스와이프로 렌즈 전환.
+       세로 우세면 손대지 않아 일반 스크롤이 그대로 동작한다. */
+    let sx = 0, sy = 0, tracking = false, decided = null;
+    const target = document.querySelector('.hero');
+    target.addEventListener('touchstart', e => {
+      if (!isNarrow() || e.touches.length !== 1) return;
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+      tracking = true; decided = null;
+    }, { passive: true });
+
+    target.addEventListener('touchmove', e => {
+      if (!tracking || !isNarrow()) return;
+      const dx = e.touches[0].clientX - sx;
+      const dy = e.touches[0].clientY - sy;
+      if (decided === null) {
+        if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+        decided = Math.abs(dx) > Math.abs(dy) * 1.4 ? 'x' : 'y';
+      }
+      if (decided !== 'x') return;
+      e.preventDefault();                       // 가로 제스처일 때만 스크롤 차단
+      if (lock || Math.abs(dx) < 46) return;
+      lock = true;
+      go(cur + (dx < 0 ? 1 : -1));              // 왼쪽으로 밀면 다음
+      setTimeout(() => { lock = false; }, 340);
+      tracking = false;
     }, { passive: false });
+
+    target.addEventListener('touchend', () => { tracking = false; decided = null; }, { passive: true });
   }
 
   layoutNodes(); drawArcs(); drawPlate(); drawFigure(); apply();

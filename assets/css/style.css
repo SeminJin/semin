@@ -484,49 +484,64 @@ img{max-width:100%; display:block}
 
 /* ============================================================
    모바일 — 수직 레일을 가로 스트립으로
+   간격은 데스크탑과 같은 2단계: 그룹 안 .4rem / 그룹 사이 1.7rem
    ============================================================ */
 @media (max-width:980px){
-  .hero{padding-bottom:var(--sp-s)}
-  .hero-text{gap:1.25rem}
-  .hero-name{font-size:clamp(2.6rem,13vw,3.6rem)}
-  .hero-statement{font-size:.82rem}
+  .hero{
+    padding:var(--sp-m) var(--sp-m) var(--sp-s);
+    row-gap:1.7rem;                       /* 텍스트 · 레일 · 미디어 = 세 덩어리 */
+  }
 
-  /* 레일: 가로 */
+  /* ── 왼쪽 덩어리들 ── */
+  .hero-text{gap:1.7rem}                  /* 그룹 사이 */
+  .id-block{gap:.7rem}                    /* 눈썹 ↔ 이름 : 한 덩어리 */
+  .hero-name{font-size:clamp(2.6rem,13vw,3.6rem)}
+  .who-block{gap:.75rem}                  /* 소개 ↔ 철학 ↔ 연락처 */
+  .hero-statement{font-size:.82rem; padding-left:.7rem}
+  .hero-contact{gap:.4rem 1rem; font-size:.78rem}
+  .news-block ul{gap:.4rem}
+  .news-h{margin-bottom:.55rem}
+
+  /* ── 가운데: 가로 레일 ── */
   .lens-rail{
-    width:100%; max-width:none; height:34px; margin:.4rem 0 0;
+    width:100%; max-width:none; height:34px; margin:0;
     border-top:1px solid var(--line); padding-top:16px;
   }
   .rail-line{
-    top:auto; bottom:auto; left:0; right:0;
+    top:calc(50% + 8px); bottom:auto; left:0; right:0;
     width:auto; height:1px; transform:none;
-    top:calc(50% + 8px);
   }
   .rail-fill{transform-origin:left center; transform:scaleX(0)}
-  .lens-node{transform:translate(-50%,-50%)}
+  .lens-node{transform:translate(-50%,-50%); width:26px; height:26px}
   .lens-node[aria-selected="true"]::after{width:22px; height:22px}
-
-  /* 활성 렌즈 이름은 패널에 이미 있으니 레일 라벨은 숨김 */
   .node-tick{display:none}
+  .hero-figure{display:none}
 
-  /* 무대: 패널 전환 시 세로 이동 대신 살짝만 */
+  /* ── 오른쪽: 미디어 덩어리 ── */
+  .hero-right{gap:.75rem}                 /* 미디어 ↔ 설명 : 한 덩어리 */
+  .lens-info{gap:.25rem}
+  .lens-panel{gap:.75rem}
   .lens-panel.before{transform:translateY(-1.5%)}
   .lens-panel.after {transform:translateY(1.5%)}
 
-  /* 축 스트립을 가로 3열로 유지하되 촘촘히 */
-  .axis-strip{grid-template-columns:repeat(3,minmax(0,1fr)); gap:.7rem; padding-top:.7rem}
-  .axis-desc{font-size:.68rem; line-height:1.4}
-  .axis-name{font-size:.52rem; letter-spacing:.1em}
+  /* 축 스트립은 별개 덩어리 — 위쪽 여백을 크게 */
+  .axis-strip{margin-top:.95rem; padding-top:.95rem; gap:.75rem}
+  .axis-desc{font-size:.7rem; line-height:1.45}
+  .axis-name{font-size:.54rem; letter-spacing:.1em}
 
-  /* 히어로와 탭 사이를 확실히 끊는다 */
-  .tabs{margin-top:var(--sp-m); border-top:1px solid var(--line)}
+  /* ── 히어로와 탭을 확실히 끊는다 ── */
+  .tabs{margin-top:1.7rem; border-top:1px solid var(--line)}
   .tabs-inner{gap:1.2rem}
   .tab{font-size:.66rem; padding:.95rem 0}
+  .panel{padding:var(--sp-m) 0 var(--sp-l)}
 }
 
 @media (max-width:520px){
-  .axis-strip{grid-template-columns:1fr; gap:.5rem}
-  .axis{display:grid; grid-template-columns:5.6rem 1fr; gap:.6rem;
-        align-items:baseline; padding-top:.4rem; border-top:1px solid var(--line)}
+  .axis-strip{grid-template-columns:1fr; gap:.45rem}
+  .axis{
+    display:grid; grid-template-columns:5.6rem 1fr; gap:.6rem;
+    align-items:baseline; padding-top:.45rem; border-top:1px solid var(--line);
+  }
   .axis.on{border-top-color:var(--point)}
   .hero-news li{grid-template-columns:4.2rem 1fr; gap:.5rem}
 }
