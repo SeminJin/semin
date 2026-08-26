@@ -78,13 +78,13 @@ img{max-width:100%; display:block}
 .pub-media{margin:0; position:relative; overflow:hidden; border-radius:3px}
 .pub-thumb{
   border:1px solid var(--line); background:var(--bg-2); border-radius:3px;
-  aspect-ratio:16/10; object-fit:cover; width:100%;
+  width:100%; height:auto; display:block;      /* 원본 비율 그대로 — 잘리지 않게 */
   transition:transform .55s cubic-bezier(.2,.7,.3,1);
 }
 .pub-media:hover .pub-thumb{transform:scale(1.02)}
 .pub-thumb.empty{
   display:grid; place-content:center; color:var(--ink-3);
-  font-size:.6rem; letter-spacing:.14em;
+  font-size:.6rem; letter-spacing:.14em; aspect-ratio:16/10;
 }
 .pub-tags{display:flex; flex-wrap:wrap; gap:.35rem; margin-bottom:.8rem}
 .tag{
@@ -228,10 +228,6 @@ img{max-width:100%; display:block}
 @media (max-width:760px){.caps{min-height:9rem}}
 
 /* 논문 썸네일 — 호버하면 움직임 */
-.pub-thumb.has-gif{cursor:zoom-in; transition:box-shadow .18s, transform .18s}
-.pub-thumb.has-gif:hover{box-shadow:0 4px 14px rgba(0,0,0,.13); transform:translateY(-1px)}
-.pub-thumb.has-gif::after{content:""}
-
 /* ============================================================
    HERO — Research Turntable
    ============================================================ */
