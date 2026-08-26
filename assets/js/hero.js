@@ -52,11 +52,52 @@
     gridEl.className = 'hero-grid';
     gridEl.setAttribute('aria-hidden', 'true');
     heroEl.prepend(gridEl);
+    const pl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    pl.setAttribute('class', 'hero-plate');
+    pl.setAttribute('aria-hidden', 'true');
+    heroEl.prepend(pl);
     const fg = document.createElement('div');
     fg.className = 'hero-figure';
     fg.setAttribute('aria-hidden', 'true');
     heroEl.prepend(fg);
   }
+  /* ---------- 배경 플레이트: 황금분할 작도 ---------- */
+  function drawPlate() {
+    const pl = heroEl && heroEl.querySelector('.hero-plate');
+    if (!pl) return;
+    const hb = heroEl.getBoundingClientRect();
+    const rr = rail.getBoundingClientRect();
+    const W = hb.width, H = hb.height;
+    const cx = rr.left - hb.left + rr.width / 2;
+    const top = rr.top - hb.top, RH = rr.height;
+    pl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    pl.setAttribute('width', W); pl.setAttribute('height', H);
+
+    const p = [];
+    /* 축을 오른쪽 변으로 삼는 황금 사각형 */
+    const gw = RH / PHI;
+    p.push(`<rect class="pl-rect" x="${cx - gw}" y="${top}" width="${gw}" height="${RH}"/>`);
+    /* 그 안의 정사각형과 남는 φ 사각형 */
+    const sq = Math.min(gw, RH);
+    p.push(`<rect class="pl-rect thin" x="${cx - gw}" y="${top}" width="${gw}" height="${gw}"/>`);
+    /* 정사각형에서 뻗는 사분원 — 황금나선의 첫 획 */
+    p.push(`<path class="pl-arc" d="M ${cx - gw} ${top + gw} A ${gw} ${gw} 0 0 0 ${cx} ${top}"/>`);
+    /* 대각선 */
+    p.push(`<line class="pl-diag" x1="${cx - gw}" y1="${top}" x2="${cx}" y2="${top + RH}"/>`);
+    p.push(`<line class="pl-diag" x1="${cx - gw}" y1="${top + RH}" x2="${cx}" y2="${top}"/>`);
+    /* 축 오른쪽 — 미디어 쪽 φ 사각형 */
+    const rw = Math.min(W - cx - 8, RH / PHI);
+    p.push(`<rect class="pl-rect thin" x="${cx}" y="${top}" width="${rw}" height="${RH}"/>`);
+    /* 노드 높이마다 작은 등록 십자 */
+    M.pos.forEach((q) => {
+      const y = top + q * RH;
+      [cx - gw, cx + rw].forEach(x => {
+        p.push(`<path class="pl-cross" d="M ${x - 3} ${y} H ${x + 3} M ${x} ${y - 3} V ${y + 3}"/>`);
+      });
+    });
+    pl.innerHTML = p.join('');
+  }
+
   function drawGrid() {
     if (!gridEl || !heroEl) return;
     const hr = heroEl.getBoundingClientRect();
@@ -97,7 +138,7 @@
     host.style.height = h + 'px';
     host.style.width  = w + 'px';
     host.style.top    = (rr.top - hb.top - rr.height * 0.02) + 'px';
-    host.style.left   = (rr.left - hb.left - w - 64) + 'px';
+    host.style.left   = (rr.left - hb.left - w + 26) + 'px';
   }
 
   /* ---------- 가운데 레일 ---------- */
@@ -250,7 +291,7 @@
     const step = down => {
       lock = true; acc = 0;
       go(cur + (down ? 1 : -1));
-      setTimeout(() => { lock = false; }, 640);
+      setTimeout(() => { lock = false; }, 380);
     };
     addEventListener('wheel', e => {
       if (scrollY > 2) return;                      // 히어로를 벗어나면 일반 스크롤
@@ -260,7 +301,7 @@
       e.preventDefault();
       if (lock) return;
       acc += e.deltaY;
-      if (Math.abs(acc) < 42) return;               // 관성 스크롤로 건너뛰지 않게
+      if (Math.abs(acc) < 34) return;               // 관성 스크롤로 건너뛰지 않게
       step(down);
     }, { passive: false });
 
@@ -277,7 +318,7 @@
     }, { passive: false });
   }
 
-  drawArcs(); drawGrid(); drawFigure(); apply();
-  if (window.ResizeObserver) new ResizeObserver(() => { drawArcs(); drawGrid(); drawFigure(); apply(); }).observe(rail);
-  else addEventListener('resize', () => { drawArcs(); drawGrid(); drawFigure(); apply(); });
+  drawArcs(); drawPlate(); drawGrid(); drawFigure(); apply();
+  if (window.ResizeObserver) new ResizeObserver(() => { drawArcs(); drawPlate(); drawGrid(); drawFigure(); apply(); }).observe(rail);
+  else addEventListener('resize', () => { drawArcs(); drawPlate(); drawGrid(); drawFigure(); apply(); });
 })();
