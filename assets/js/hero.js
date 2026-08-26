@@ -26,7 +26,10 @@
       .map(l => l.url ? `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>` : l.label)
       .join(' and ');
     text.innerHTML = `
-      <h1 class="hero-name">Semin<br><em>Jin</em></h1>
+      <div class="id-block">
+        <p class="hero-eyebrow">AI Design Computing &amp; Human-Centered Design Evaluation</p>
+        <h1 class="hero-name">Semin<br><em>Jin</em></h1>
+      </div>
       <div class="who-block">
         <p class="hero-bio"><b>${SITE.role}</b> at ${SITE.affiliation}, affiliated with the ${lab}.</p>
         <div class="hero-contact">
@@ -77,20 +80,24 @@
   }
 
 
-  /* ---------- 모듈러 인체 (르 코르뷔지에 원본 실루엣 하프톤) ---------- */
+  /* ---------- 모듈러 인체 ----------
+     르 코르뷔지에 원본 실루엣을 하프톤으로. 노드가 내려갈수록
+     올린 팔이 함께 내려온다(0° → -26° → -52° → -78°).      */
+  const POSE_RATIO = 640 / 1334;
   function drawFigure() {
     const host = document.querySelector('.hero-figure');
     if (!host) return;
-    const rr = rail.getBoundingClientRect();
-    const hb = heroEl.getBoundingClientRect();
-    const h  = rr.height * 1.02;                    // 수직선과 거의 같은 키
-    const w  = h * (640 / 2100);
+    if (!host.firstChild) {
+      host.innerHTML = L.map((_, i) =>
+        `<img src="assets/img/hero/modulor-${Math.min(i, 3)}.png"
+              class="pose${i ? '' : ' on'}" alt="" aria-hidden="true">`).join('');
+    }
+    const rr = rail.getBoundingClientRect(), hb = heroEl.getBoundingClientRect();
+    const h = rr.height * 1.04, w = h * POSE_RATIO;
     host.style.height = h + 'px';
     host.style.width  = w + 'px';
-    host.style.top    = (rr.top - hb.top) + 'px';
-    host.style.left   = (rr.left - hb.left - w - 96) + 'px';
-    if (!host.firstChild)
-      host.innerHTML = '<img src="assets/img/hero/modulor.png" alt="" aria-hidden="true">';
+    host.style.top    = (rr.top - hb.top - rr.height * 0.02) + 'px';
+    host.style.left   = (rr.left - hb.left - w - 64) + 'px';
   }
 
   /* ---------- 가운데 레일 ---------- */
@@ -216,6 +223,8 @@
     });
     nodes.forEach((n, i) => n.setAttribute('aria-selected', i === cur));
     axes.forEach(a => a.classList.toggle('on', a.dataset.axis === axis));
+    document.querySelectorAll('.hero-figure .pose')
+      .forEach((p, i) => p.classList.toggle('on', i === cur));
     svg.querySelectorAll('.leaf').forEach(g =>
       g.classList.toggle('on', +g.dataset.i === cur));
     if (fill) fill.style.transform = `scaleY(${M.pos[cur]})`;
@@ -234,6 +243,39 @@
     if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
     if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  { e.preventDefault(); go(cur - 1); }
   });
+
+  /* ---------- 스크롤: 노드를 다 지나야 아래로 ---------- */
+  {
+    let lock = false, acc = 0;
+    const step = down => {
+      lock = true; acc = 0;
+      go(cur + (down ? 1 : -1));
+      setTimeout(() => { lock = false; }, 640);
+    };
+    addEventListener('wheel', e => {
+      if (scrollY > 2) return;                      // 히어로를 벗어나면 일반 스크롤
+      const down = e.deltaY > 0;
+      if (down && cur >= L.length - 1) return;      // 마지막 노드 → 아래로 통과
+      if (!down && cur <= 0) return;
+      e.preventDefault();
+      if (lock) return;
+      acc += e.deltaY;
+      if (Math.abs(acc) < 42) return;               // 관성 스크롤로 건너뛰지 않게
+      step(down);
+    }, { passive: false });
+
+    let ty = null;
+    addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
+    addEventListener('touchmove', e => {
+      if (ty === null || scrollY > 2) return;
+      const dy = ty - e.touches[0].clientY;
+      if (Math.abs(dy) < 48) return;
+      const down = dy > 0;
+      if ((down && cur >= L.length - 1) || (!down && cur <= 0)) return;
+      e.preventDefault(); ty = e.touches[0].clientY;
+      if (!lock) step(down);
+    }, { passive: false });
+  }
 
   drawArcs(); drawGrid(); drawFigure(); apply();
   if (window.ResizeObserver) new ResizeObserver(() => { drawArcs(); drawGrid(); drawFigure(); apply(); }).observe(rail);
