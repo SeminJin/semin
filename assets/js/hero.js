@@ -26,10 +26,7 @@
       .map(l => l.url ? `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>` : l.label)
       .join(' and ');
     text.innerHTML = `
-      <div class="id-block">
-        <p class="hero-eyebrow"><span>AI Design Computing &amp;</span><span>Human-Centered Design Evaluation</span></p>
-        <h1 class="hero-name">Semin<br><em>Jin</em></h1>
-      </div>
+      <h1 class="hero-name">Semin<br><em>Jin</em></h1>
       <div class="who-block">
         <p class="hero-bio"><b>${SITE.role}</b> at ${SITE.affiliation}, affiliated with the ${lab}.</p>
         <div class="hero-contact">
@@ -80,66 +77,20 @@
   }
 
 
-  /* ---------- 모듈러 인체 ----------
-     좌표계 100 × 226 — 실제 모듈러 비례를 따른다.
-       손끝 2260 → y 0     머리끝 1829 → y 43
-       배꼽 1130 → y 113    바닥    0   → y 226
-     정연한 격자가 아니라 난수 산포로 찍어 비정형으로 만든다.        */
-  const FIG = `
-    <ellipse cx="40" cy="55" rx="9" ry="12"/>
-    <path d="M35.5 65 H44.5 V73.5 H35.5 Z"/>
-    <path d="M26 79 C26 74.5 29 71.5 33 70.6 C36 69.9 44 69.9 47 70.6
-             C51 71.5 54 74.5 54 79 L52.5 95 L51 110
-             C51 117 49.5 122 47.5 124.5 L32.5 124.5
-             C30.5 122 29 117 29 110 L27.5 95 Z"/>
-    <path d="M50 74.5 C53.5 73.5 56 70.5 57 66.5 L61.6 20
-             C62.2 14 60.6 10.6 57.8 10.6 C55.3 10.6 53.9 13.6 53.4 19
-             L49.4 62.5 C48.9 67.5 48.4 70.8 47 72.8 Z"/>
-    <ellipse cx="59.4" cy="7" rx="4.6" ry="6"/>
-    <path d="M30 74.5 C26.5 75.5 24.5 78.5 23.5 82.5 L20 110.5
-             C19.3 116.5 20 121.5 22 124.5 C23.6 126.8 26 127.3 27.6 125.6
-             L26 121.2 C24.6 119.6 24.1 116.2 24.6 111.2 L27.6 84.5
-             C28.1 80.5 29.1 77.5 31 76 Z"/>
-    <path d="M31 121 L40 121 L40.5 170 L39.6 216 L31.6 216 L32 170 Z"/>
-    <path d="M42 121 L51 121 L50 170 L50.6 216 L42.6 216 L41.6 170 Z"/>
-    <path d="M29 214 H40.5 V222 H26 C25 219.2 26.4 215.6 29 214 Z"/>
-    <path d="M42.5 214 H54 C56.6 215.6 58 219.2 57 222 H42.5 Z"/>`;
-
-  /* 결정적 난수 */
-  let _s = 20260826;
-  const rnd = () => (_s = (_s * 1664525 + 1013904223) % 4294967296) / 4294967296;
-
+  /* ---------- 모듈러 인체 (르 코르뷔지에 원본 실루엣 하프톤) ---------- */
   function drawFigure() {
     const host = document.querySelector('.hero-figure');
     if (!host) return;
     const rr = rail.getBoundingClientRect();
-    const h = rr.height * 0.5;                 // 수직선의 절반 크기
-    const w = h * (100 / 226);
+    const hb = heroEl.getBoundingClientRect();
+    const h  = rr.height * 1.02;                    // 수직선과 거의 같은 키
+    const w  = h * (640 / 2100);
     host.style.height = h + 'px';
     host.style.width  = w + 'px';
-    const hb = heroEl.getBoundingClientRect();
-    host.style.top  = (rr.top - hb.top + rr.height * 0.25) + 'px';
-    host.style.left = (rr.left - hb.left - w - 34) + 'px';   // 수직선 왼쪽 여백
-
-    _s = 20260826;
-    /* 지터 격자 — 규칙적 격자의 답답함 없이 밀도는 확보 */
-    const STEP = 1.8, J = 0.85;
-    let dots = '';
-    for (let gy = -1; gy < 228; gy += STEP) {
-      for (let gx = 8; gx < 92; gx += STEP) {
-        if (rnd() < 0.10) continue;                       // 군데군데 비움
-        const x = gx + (rnd() - 0.5) * 2 * J;
-        const y = gy + (rnd() - 0.5) * 2 * J;
-        const r = 0.42 + rnd() * 0.62;
-        const o = (0.3 + rnd() * 0.7).toFixed(2);
-        dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(2)}" opacity="${o}"/>`;
-      }
-    }
-    host.innerHTML = `
-      <svg viewBox="0 0 100 226" width="100%" height="100%" aria-hidden="true">
-        <defs><clipPath id="figclip">${FIG}</clipPath></defs>
-        <g clip-path="url(#figclip)" fill="var(--navy)">${dots}</g>
-      </svg>`;
+    host.style.top    = (rr.top - hb.top) + 'px';
+    host.style.left   = (rr.left - hb.left - w - 96) + 'px';
+    if (!host.firstChild)
+      host.innerHTML = '<img src="assets/img/hero/modulor.png" alt="" aria-hidden="true">';
   }
 
   /* ---------- 가운데 레일 ---------- */
@@ -193,27 +144,48 @@
     const r = rail.getBoundingClientRect();
     const W = r.width, H = r.height;
     if (!W || !H) return;
-    svg.setAttribute('width', W);
+    /* 좌우로 넓게 넘치는 캔버스 — 공간감은 여기서 나온다 */
+    const PAD = Math.min(560, Math.max(220, window.innerWidth * 0.24));
+    svg.setAttribute('width', W + PAD * 2);
     svg.setAttribute('height', H);
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('viewBox', `${-PAD} 0 ${W + PAD * 2} ${H}`);
+    svg.style.left = -PAD + 'px';
     svg.innerHTML =
-      `<defs><pattern id="hatch" width="3" height="2.4" patternUnits="userSpaceOnUse">
-         <line x1="0" y1="0" x2="3" y2="0" stroke="currentColor" stroke-width=".45"/>
-       </pattern></defs>`;
+      `<defs>
+         <pattern id="hatch" width="3" height="2.4" patternUnits="userSpaceOnUse">
+           <line x1="0" y1="0" x2="3" y2="0" stroke="currentColor" stroke-width=".45"/>
+         </pattern>
+         <pattern id="band" width="4.5" height="4.5" patternUnits="userSpaceOnUse">
+           <line x1="0" y1="0" x2="0" y2="4.5" stroke="currentColor" stroke-width=".5"/>
+         </pattern>
+       </defs>`;
     const cx = W / 2;
 
+    /* ① 해칭 밴드 — 축 왼쪽 (레퍼런스의 세로 줄무늬 띠) */
+    const bw = PAD * 0.42;
+    svg.insertAdjacentHTML('beforeend',
+      `<rect class="band" x="${cx - bw - PAD * 0.16}" y="0" width="${bw}" height="${H}"
+             fill="url(#band)"/>`);
+
+    /* ② 큰 원호 — 축에서 왼쪽으로 크게 펼쳐져 화면 밖으로 흘러나간다 */
+    const BIG = [[0, 0.618], [0.382, 1]];
+    BIG.forEach(([p0, p1], i) => {
+      const y0 = p0 * H, y1 = p1 * H, hh = y1 - y0;
+      const bow = PAD * (i ? 0.62 : 0.94);
+      const R = (bow * bow + (hh / 2) * (hh / 2)) / (2 * bow);
+      svg.insertAdjacentHTML('beforeend',
+        `<path class="arc-big" d="M ${cx} ${y0} A ${R} ${R} 0 0 0 ${cx} ${y1}"/>`);
+    });
+
+    /* ③ 잎 수열 — 축 위, 좌우 반 칸 어긋남 */
     M.seg.forEach((sg, i) => {
       const y0 = M.pos[i] * H, h = sg * H;
       const g = document.createElementNS(NS, 'g');
       g.setAttribute('class', 'leaf' + (i === cur ? ' on' : ''));
       g.dataset.i = i;
-
-      /* 오른쪽 — 구간 그대로 */
       addHalf(g, leafPath(cx, y0, y0 + h, 1), 'r');
-      /* 왼쪽 — 반 칸 아래로 어긋남 */
       const ly0 = Math.min(H, y0 + h / 2), ly1 = Math.min(H, ly0 + h);
       if (ly1 - ly0 > 4) addHalf(g, leafPath(cx, ly0, ly1, 0), 'l');
-
       svg.appendChild(g);
     });
 
