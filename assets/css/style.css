@@ -350,16 +350,70 @@ img{max-width:100%; display:block}
 .hero-news .t{display:block}
 .hero-news b{color:var(--ink); font-weight:600}
 
-/* ---------- 세 렌즈 ---------- */
-.hero-lenses{display:flex; flex-direction:column; gap:var(--sp-l)}
-@media (max-width:960px){.hero-lenses{gap:var(--sp-m)}}
+/* ---------- 세 렌즈: 수직 레일 + 노드 슬라이딩 ---------- */
+.hero-lenses{
+  display:grid; grid-template-columns:auto minmax(0,1fr); gap:1.8rem;
+  align-items:start;
+}
+@media (max-width:960px){.hero-lenses{gap:1.1rem}}
 
-.lens-panel{display:grid; gap:1rem}
+/* 레일 */
+.lens-rail{
+  position:relative; display:flex; flex-direction:column; justify-content:space-between;
+  align-self:stretch; min-height:300px; padding:2px 0; width:18px;
+}
+.rail-line{
+  position:absolute; top:0; bottom:0; left:50%; width:1px;
+  background:var(--line); transform:translateX(-50%); overflow:hidden;
+}
+.rail-fill{
+  display:block; width:100%; height:100%; background:var(--point);
+  transform-origin:top center; transform:scaleY(0);
+  transition:transform .68s cubic-bezier(.22,1,.28,1);
+}
+.lens-node{
+  appearance:none; border:0; background:none; padding:0; cursor:pointer;
+  position:relative; width:18px; height:18px; display:grid; place-items:center;
+}
+.node-dot{
+  width:7px; height:7px; border-radius:50%;
+  background:var(--bg); border:1px solid var(--ink-3);
+  transition:background .3s, border-color .3s, transform .3s;
+}
+.lens-node:hover .node-dot{border-color:var(--point)}
+.lens-node[aria-selected="true"] .node-dot{
+  background:var(--point); border-color:var(--point); transform:scale(1.4);
+}
+.node-label{
+  position:absolute; right:calc(100% + .55rem); top:50%; transform:translateY(-50%);
+  font-family:var(--mono); font-size:.54rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); white-space:nowrap; opacity:0; transition:opacity .25s, color .25s;
+  pointer-events:none;
+}
+.lens-node:hover .node-label,
+.lens-node[aria-selected="true"] .node-label{opacity:1}
+.lens-node[aria-selected="true"] .node-label{color:var(--point)}
+@media (max-width:960px){.node-label{display:none}}
+
+/* 무대 */
+.lens-stage{position:relative; display:grid}
+.lens-panel{
+  grid-area:1/1; display:grid; gap:1rem; align-content:start;
+  transition:transform .62s cubic-bezier(.22,1,.28,1), opacity .2s ease;
+  will-change:transform,opacity;
+}
+/* 나가는 패널이 먼저 사라지고 나서 들어오는 패널이 뜬다 — 글자 겹침 방지 */
+.lens-panel.on    {transform:none;               opacity:1; z-index:2; pointer-events:auto;
+                   transition:transform .62s cubic-bezier(.22,1,.28,1), opacity .3s ease .22s}
+.lens-panel.before{transform:translateY(-5%) scale(.985); opacity:0; z-index:1; pointer-events:none}
+.lens-panel.after {transform:translateY(5%)  scale(.985); opacity:0; z-index:1; pointer-events:none}
+
 .lens-media{
   margin:0; border-radius:3px; overflow:hidden;
   border:1px solid var(--line); background:var(--bg-2);
+  aspect-ratio:16/10; display:grid; place-items:center;
 }
-.lens-media img{width:100%; height:auto; display:block}
+.lens-media img{width:100%; height:100%; object-fit:contain; display:block}
 /* 배경이 빠진(투명) 미디어는 액자 없이 지면 위에 얹는다 */
 .lens-panel.is-cutout .lens-media{border:0; background:none; overflow:visible}
 .lens-panel.is-cutout .lens-media img{filter:drop-shadow(0 18px 30px rgba(20,20,30,.15))}
@@ -380,4 +434,9 @@ img{max-width:100%; display:block}
   font-size:.62rem; color:var(--ink-3); letter-spacing:.05em; margin-top:.2rem;
 }
 
-@media (prefers-reduced-motion:reduce){.hero-scroll span{animation:none}}
+@media (prefers-reduced-motion:reduce){
+  .hero-scroll span{animation:none}
+  .lens-panel{transition:opacity .3s}
+  .lens-panel.before,.lens-panel.after{transform:none}
+  .rail-fill{transition:none}
+}

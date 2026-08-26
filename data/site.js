@@ -81,7 +81,7 @@ const SITE = {
     {
       tags: ["spatial"],
       title: "Behavior-Aware Anthropometric Scene Generation for Human-Usable 3D Layouts",
-      thumb: "assets/img/research_thumbs/chi2026.webp",
+      thumb: "assets/img/hero/spatial.webp",
       venue: "ACM CHI 2026 Paper", year: 2026, detail: "Barcelona, Spain",
       authors: "<b>Semin Jin</b>, Donghyuk Kim, Jeongmin Ryu, Kyung Hoon Hyun",
       index: "~SCIE TOP-TIER", field: "BKCSA003, h5-index=139",
@@ -145,7 +145,7 @@ const SITE = {
     {
       tags: ["experiential"],
       title: "The Impact of Sketch-guided vs. Prompt-guided 3D Generative AIs on the Design Exploration Process",
-      thumb: "assets/img/research_thumbs/sketch.webp",
+      thumb: "assets/img/hero/experiential.webp",
       venue: "ACM CHI 2024 Paper", year: 2024, detail: "Honolulu, USA",
       authors: "Seung Won Lee, Tae Hee Joo, <b>Semin Jin</b>, Jiin Choi, Kyungwon Yun, Sergio Bromberg, Seonghoon Ban, Kyung Hoon Hyun",
       index: "~SCIE TOP-TIER", field: "BKCSA003, h5-index=113",

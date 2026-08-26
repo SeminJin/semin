@@ -28,21 +28,63 @@
       </div>`;
   }
 
-  /* ---------- 오른쪽: 세 렌즈 ---------- */
+  /* ---------- 오른쪽: 세 렌즈 (수직 레일 + 노드) ---------- */
   const host = document.getElementById('hero-lenses');
-  if (host && SITE.heroLens) {
-    host.innerHTML = SITE.heroLens.map((l, i) => `
-      <article class="lens-panel${l.transparent ? ' is-cutout' : ''}" data-lens="${l.key}">
-        <figure class="lens-media">
-          <img src="${l.media}" alt="${l.project}" ${i ? 'loading="lazy"' : ''}>
-        </figure>
-        <div class="lens-info">
-          <span class="lens-key">${l.key}</span>
-          <p class="lens-desc">${l.desc}</p>
-          <a class="lens-link" href="${l.href}" target="_blank" rel="noopener">
-            ${l.project} <span class="lens-venue">${l.venue}</span>
-          </a>
-        </div>
-      </article>`).join('');
+  if (!host || !SITE.heroLens) return;
+  const L = SITE.heroLens;
+
+  host.innerHTML = `
+    <nav class="lens-rail" role="tablist" aria-label="research lens">
+      <span class="rail-line"><span class="rail-fill"></span></span>
+      ${L.map((l, i) => `
+        <button class="lens-node" role="tab" data-i="${i}"
+                aria-selected="${i === 0}" aria-label="${l.key}" title="${l.key}">
+          <span class="node-dot"></span><span class="node-label">${l.key}</span>
+        </button>`).join('')}
+    </nav>
+    <div class="lens-stage">
+      ${L.map((l, i) => `
+        <article class="lens-panel${l.transparent ? ' is-cutout' : ''}${i ? ' after' : ' on'}"
+                 data-lens="${l.key}" aria-hidden="${i !== 0}">
+          <figure class="lens-media">
+            <img src="${l.media}" alt="${l.project}" ${i ? 'loading="lazy"' : ''}>
+          </figure>
+          <div class="lens-info">
+            <span class="lens-key">${l.key}</span>
+            <p class="lens-desc">${l.desc}</p>
+            <a class="lens-link" href="${l.href}" target="_blank" rel="noopener">
+              ${l.project} <span class="lens-venue">${l.venue}</span>
+            </a>
+          </div>
+        </article>`).join('')}
+    </div>`;
+
+  const nodes  = [...host.querySelectorAll('.lens-node')];
+  const panels = [...host.querySelectorAll('.lens-panel')];
+  const fill   = host.querySelector('.rail-fill');
+
+  let cur = 0;
+  function apply() {
+    panels.forEach((p, i) => {
+      p.classList.toggle('on',     i === cur);
+      p.classList.toggle('before', i <  cur);
+      p.classList.toggle('after',  i >  cur);
+      p.setAttribute('aria-hidden', i !== cur);
+    });
+    nodes.forEach((n, i) => n.setAttribute('aria-selected', i === cur));
+    if (fill) fill.style.transform =
+      `scaleY(${L.length > 1 ? cur / (L.length - 1) : 1})`;
   }
+  const go = i => { cur = (i + L.length) % L.length; apply(); };
+
+  nodes.forEach((n, i) => {
+    n.addEventListener('click', () => go(i));
+    n.addEventListener('mouseenter', () => go(i));
+  });
+  host.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+    if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  { e.preventDefault(); go(cur - 1); }
+  });
+
+  apply();
 })();
