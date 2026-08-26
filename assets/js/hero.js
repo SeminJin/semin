@@ -6,6 +6,7 @@
 (function () {
   if (typeof SITE === 'undefined') return;
   const L = SITE.heroLens || [];
+  const isNarrow = () => matchMedia('(max-width:980px)').matches;
   const PHI = 1.6180339887;
 
   /* 구간 길이를 φ로 줄여가며 노드 위치(0~1)를 만든다 */
@@ -68,6 +69,7 @@
   function drawPlate() {
     const pl = heroEl && heroEl.querySelector('.hero-plate');
     if (!pl) return;
+    if (isNarrow()) { pl.innerHTML = ''; return; }
     const hb = heroEl.getBoundingClientRect();
     const rr = rail.getBoundingClientRect();
     const tb = document.querySelector('.hero-text').getBoundingClientRect();
@@ -110,6 +112,16 @@
     pl.innerHTML = p.join('');
   }
 
+  /* 노드 위치: 세로 레일이면 top, 가로 레일이면 left */
+  function layoutNodes() {
+    const narrow = isNarrow();
+    rail.querySelectorAll('.lens-node').forEach(n => {
+      const p = n.dataset.p + '%';
+      n.style.top  = narrow ? '50%' : p;
+      n.style.left = narrow ? p : '50%';
+    });
+  }
+
   /* ---------- 모듈러 인체 ----------
      르 코르뷔지에 원본 실루엣을 하프톤으로. 노드가 내려갈수록
      올린 팔이 함께 내려온다 (상완 0/-17/-38/-62°, 전완은 42% 되돌림). */
@@ -141,7 +153,7 @@
     <span class="rail-line"><span class="rail-fill"></span></span>
     ${L.map((l, i) => `
       <button class="lens-node" role="tab" data-i="${i}" data-axis="${l.key}"
-              style="top:${(M.pos[i] * 100).toFixed(3)}%"
+              data-p="${(M.pos[i] * 100).toFixed(3)}"
               aria-selected="${i === 0}" aria-label="${l.key} — ${l.project}"
               title="${l.project}"><span class="node-dot"></span>
         <span class="node-tick">${i === 0 || L[i-1].key !== l.key ? l.key : ''}</span></button>`).join('')}`;
@@ -178,6 +190,7 @@
   }
 
   function drawArcs() {
+    if (isNarrow()) { svg.innerHTML = ''; return; }
     const r = rail.getBoundingClientRect();
     const W = r.width, H = r.height;
     if (!W || !H) return;
@@ -257,7 +270,8 @@
       .forEach((p, i) => p.classList.toggle('on', i === cur));
     svg.querySelectorAll('.leaf').forEach(g =>
       g.classList.toggle('on', +g.dataset.i === cur));
-    if (fill) fill.style.transform = `scaleY(${M.pos[cur]})`;
+    if (fill) fill.style.transform =
+      isNarrow() ? `scaleX(${M.pos[cur]})` : `scaleY(${M.pos[cur]})`;
   }
   const go = i => { cur = (i + L.length) % L.length; apply(); };
 
@@ -283,7 +297,7 @@
       setTimeout(() => { lock = false; }, 380);
     };
     addEventListener('wheel', e => {
-      if (scrollY > 2) return;                      // 히어로를 벗어나면 일반 스크롤
+      if (isNarrow() || scrollY > 2) return;         // 모바일·히어로 밖에서는 일반 스크롤
       const down = e.deltaY > 0;
       if (down && cur >= L.length - 1) return;      // 마지막 노드 → 아래로 통과
       if (!down && cur <= 0) return;
@@ -297,7 +311,7 @@
     let ty = null;
     addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
     addEventListener('touchmove', e => {
-      if (ty === null || scrollY > 2) return;
+      if (ty === null || isNarrow() || scrollY > 2) return;
       const dy = ty - e.touches[0].clientY;
       if (Math.abs(dy) < 48) return;
       const down = dy > 0;
@@ -307,7 +321,7 @@
     }, { passive: false });
   }
 
-  drawArcs(); drawPlate(); drawFigure(); apply();
-  if (window.ResizeObserver) new ResizeObserver(() => { drawArcs(); drawPlate(); drawFigure(); apply(); }).observe(rail);
-  else addEventListener('resize', () => { drawArcs(); drawPlate(); drawFigure(); apply(); });
+  layoutNodes(); drawArcs(); drawPlate(); drawFigure(); apply();
+  if (window.ResizeObserver) new ResizeObserver(() => { layoutNodes(); drawArcs(); drawPlate(); drawFigure(); apply(); }).observe(rail);
+  else addEventListener('resize', () => { layoutNodes(); drawArcs(); drawPlate(); drawFigure(); apply(); });
 })();

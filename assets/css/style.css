@@ -481,3 +481,52 @@ img{max-width:100%; display:block}
   font-family:var(--mono); font-size:.62rem; letter-spacing:.12em;
   text-transform:uppercase; color:var(--ink-3);
 }
+
+/* ============================================================
+   모바일 — 수직 레일을 가로 스트립으로
+   ============================================================ */
+@media (max-width:980px){
+  .hero{padding-bottom:var(--sp-s)}
+  .hero-text{gap:1.25rem}
+  .hero-name{font-size:clamp(2.6rem,13vw,3.6rem)}
+  .hero-statement{font-size:.82rem}
+
+  /* 레일: 가로 */
+  .lens-rail{
+    width:100%; max-width:none; height:34px; margin:.4rem 0 0;
+    border-top:1px solid var(--line); padding-top:16px;
+  }
+  .rail-line{
+    top:auto; bottom:auto; left:0; right:0;
+    width:auto; height:1px; transform:none;
+    top:calc(50% + 8px);
+  }
+  .rail-fill{transform-origin:left center; transform:scaleX(0)}
+  .lens-node{transform:translate(-50%,-50%)}
+  .lens-node[aria-selected="true"]::after{width:22px; height:22px}
+
+  /* 활성 렌즈 이름은 패널에 이미 있으니 레일 라벨은 숨김 */
+  .node-tick{display:none}
+
+  /* 무대: 패널 전환 시 세로 이동 대신 살짝만 */
+  .lens-panel.before{transform:translateY(-1.5%)}
+  .lens-panel.after {transform:translateY(1.5%)}
+
+  /* 축 스트립을 가로 3열로 유지하되 촘촘히 */
+  .axis-strip{grid-template-columns:repeat(3,minmax(0,1fr)); gap:.7rem; padding-top:.7rem}
+  .axis-desc{font-size:.68rem; line-height:1.4}
+  .axis-name{font-size:.52rem; letter-spacing:.1em}
+
+  /* 히어로와 탭 사이를 확실히 끊는다 */
+  .tabs{margin-top:var(--sp-m); border-top:1px solid var(--line)}
+  .tabs-inner{gap:1.2rem}
+  .tab{font-size:.66rem; padding:.95rem 0}
+}
+
+@media (max-width:520px){
+  .axis-strip{grid-template-columns:1fr; gap:.5rem}
+  .axis{display:grid; grid-template-columns:5.6rem 1fr; gap:.6rem;
+        align-items:baseline; padding-top:.4rem; border-top:1px solid var(--line)}
+  .axis.on{border-top-color:var(--point)}
+  .hero-news li{grid-template-columns:4.2rem 1fr; gap:.5rem}
+}
