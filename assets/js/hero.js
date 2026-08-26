@@ -61,70 +61,58 @@
     fg.setAttribute('aria-hidden', 'true');
     heroEl.prepend(fg);
   }
-  /* ---------- 배경 플레이트: 황금분할 작도 ---------- */
+  /* ---------- 배경 플레이트 ----------
+     노드 높이마다 가로 눈금선을 긋되, 왼쪽 텍스트를 만나면 선이 비켜간다.
+     세로선 3줄(텍스트 밖 / 축 / 미디어 앞)과 교차점 십자로 전체를 묶는다. */
   function drawPlate() {
     const pl = heroEl && heroEl.querySelector('.hero-plate');
     if (!pl) return;
     const hb = heroEl.getBoundingClientRect();
     const rr = rail.getBoundingClientRect();
+    const tb = document.querySelector('.hero-text').getBoundingClientRect();
+    const mb = document.querySelector('.hero-right').getBoundingClientRect();
     const W = hb.width, H = hb.height;
-    const cx = rr.left - hb.left + rr.width / 2;
+    const cx  = rr.left - hb.left + rr.width / 2;
     const top = rr.top - hb.top, RH = rr.height;
+
+    const textR = tb.right - hb.left;                 // 텍스트 칼럼 오른쪽 끝
+    const keep  = [tb.top - hb.top - 6, tb.bottom - hb.top + 6];
+    const Lx = Math.min(textR + 26, cx - 40);
+    const Rx = Math.max(mb.left - hb.left - 26, cx + 40);
+
+    const rows = M.pos.concat([1]);
+    const p = [];
+
+    rows.forEach(q => {
+      const y = top + q * RH;
+      const hits = y > keep[0] && y < keep[1];
+      const x0 = hits ? textR + 18 : 0;
+      p.push(`<line class="pl-rule" x1="${x0}" y1="${y}" x2="${W}" y2="${y}"/>`);
+      if (hits) p.push(`<line class="pl-rule" x1="0" y1="${y}" x2="26" y2="${y}"/>`);  // 왼쪽 끝 눈금
+    });
+
+    [Lx, Rx].forEach(x =>
+      p.push(`<line class="pl-vert" x1="${x}" y1="${top - 46}" x2="${x}" y2="${top + RH + 46}"/>`));
+
+    rows.forEach(q => {
+      const y = top + q * RH;
+      [Lx, Rx].forEach(x =>
+        p.push(`<path class="pl-cross" d="M ${x - 11} ${y} H ${x + 11} M ${x} ${y - 11} V ${y + 11}"/>`));
+    });
+
+    /* 황금나선 첫 사분원 — 축 왼쪽에 옅은 악센트 */
+    const gw = RH / PHI;
+    p.push(`<path class="pl-arc" d="M ${cx - gw} ${top + gw} A ${gw} ${gw} 0 0 0 ${cx} ${top}"/>`);
+
     pl.setAttribute('viewBox', `0 0 ${W} ${H}`);
     pl.setAttribute('width', W); pl.setAttribute('height', H);
-
-    const p = [];
-    /* 축을 오른쪽 변으로 삼는 황금 사각형 */
-    const gw = RH / PHI;
-    p.push(`<rect class="pl-rect" x="${cx - gw}" y="${top}" width="${gw}" height="${RH}"/>`);
-    /* 그 안의 정사각형과 남는 φ 사각형 */
-    const sq = Math.min(gw, RH);
-    p.push(`<rect class="pl-rect thin" x="${cx - gw}" y="${top}" width="${gw}" height="${gw}"/>`);
-    /* 정사각형에서 뻗는 사분원 — 황금나선의 첫 획 */
-    p.push(`<path class="pl-arc" d="M ${cx - gw} ${top + gw} A ${gw} ${gw} 0 0 0 ${cx} ${top}"/>`);
-    /* 대각선 */
-    p.push(`<line class="pl-diag" x1="${cx - gw}" y1="${top}" x2="${cx}" y2="${top + RH}"/>`);
-    p.push(`<line class="pl-diag" x1="${cx - gw}" y1="${top + RH}" x2="${cx}" y2="${top}"/>`);
-    /* 축 오른쪽 — 미디어 쪽 φ 사각형 */
-    const rw = Math.min(W - cx - 8, RH / PHI);
-    p.push(`<rect class="pl-rect thin" x="${cx}" y="${top}" width="${rw}" height="${RH}"/>`);
-    /* 노드 높이마다 작은 등록 십자 */
-    M.pos.forEach((q) => {
-      const y = top + q * RH;
-      [cx - gw, cx + rw].forEach(x => {
-        p.push(`<path class="pl-cross" d="M ${x - 3} ${y} H ${x + 3} M ${x} ${y - 3} V ${y + 3}"/>`);
-      });
-    });
     pl.innerHTML = p.join('');
   }
 
-  function drawGrid() {
-    if (!gridEl || !heroEl) return;
-    const hr = heroEl.getBoundingClientRect();
-    const rr = rail.getBoundingClientRect();
-    const top = rr.top - hr.top, H = rr.height;
-    const cx  = rr.left - hr.left + rr.width / 2;
-    const ticks = [];
-    M.pos.forEach((p, i) => {
-      ticks.push({ y: top + p * H, k: Math.pow(1 / PHI, i), major: true });
-      if (M.seg[i]) ticks.push({ y: top + (p + M.seg[i] / 2) * H,
-                                 k: Math.pow(1 / PHI, i + 1), major: false });
-    });
-    ticks.push({ y: top + H, k: Math.pow(1 / PHI, M.pos.length), major: true });
-    const BASE = Math.min(340, hr.width * 0.22);      // 최상단 눈금 길이
-    gridEl.innerHTML = ticks.map(t => {
-      const len = Math.max(14, BASE * t.k);
-      return `<span class="grid-line${t.major ? ' major' : ''}"
-        style="top:${t.y.toFixed(1)}px; left:${(cx - len).toFixed(1)}px;
-               width:${(len * 2).toFixed(1)}px"></span>`;
-    }).join('');
-  }
-
-
   /* ---------- 모듈러 인체 ----------
      르 코르뷔지에 원본 실루엣을 하프톤으로. 노드가 내려갈수록
-     올린 팔이 함께 내려온다(0° → -26° → -52° → -78°).      */
-  const POSE_RATIO = 640 / 1334;
+     올린 팔이 함께 내려온다 (상완 0/-17/-38/-62°, 전완은 42% 되돌림). */
+  const POSE_RATIO = 640 / 1406;
   function drawFigure() {
     const host = document.querySelector('.hero-figure');
     if (!host) return;
@@ -318,7 +306,7 @@
     }, { passive: false });
   }
 
-  drawArcs(); drawPlate(); drawGrid(); drawFigure(); apply();
-  if (window.ResizeObserver) new ResizeObserver(() => { drawArcs(); drawPlate(); drawGrid(); drawFigure(); apply(); }).observe(rail);
-  else addEventListener('resize', () => { drawArcs(); drawPlate(); drawGrid(); drawFigure(); apply(); });
+  drawArcs(); drawPlate(); drawFigure(); apply();
+  if (window.ResizeObserver) new ResizeObserver(() => { drawArcs(); drawPlate(); drawFigure(); apply(); }).observe(rail);
+  else addEventListener('resize', () => { drawArcs(); drawPlate(); drawFigure(); apply(); });
 })();
