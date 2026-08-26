@@ -8,27 +8,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=141733">
+<link rel="stylesheet" href="assets/css/style.css?v=142606">
 </head>
 <body>
 
 <!-- ══════════════════════════════════════════════════
-     HERO
-     왼쪽: 이름 · 소개 · 연락처 · News
-     오른쪽: 세 렌즈를 한꺼번에 (자동재생)
+     HERO — 가운데 수직 레일을 축으로
+       왼쪽  : 이름 · 소개 · 연락처 · 세 연구축 · News
+       가운데: 레일 (노드 = 연구 스테이션)
+       오른쪽: 활성 스테이션의 미디어
      ══════════════════════════════════════════════════ -->
 <header class="hero">
-  <div class="hero-text">
-    <p class="hero-eyebrow">AI Design Computing &amp;<br>Human-Centered Design Evaluation</p>
-    <h1 class="hero-name">Semin<br><em>Jin</em></h1>
-    <div id="hero-id"></div>
-  </div>
-  <div class="hero-lenses" id="hero-lenses"></div>
+  <div class="hero-text" id="hero-text"></div>
+  <nav class="lens-rail" id="lens-rail" role="tablist" aria-label="research"></nav>
+  <div class="lens-stage" id="lens-stage"></div>
 </header>
 
-<!-- ══════════════════════════════════════════════════
-     TABS → 바로 논문
-     ══════════════════════════════════════════════════ -->
 <nav class="tabs">
   <div class="tabs-inner" role="tablist">
     <button class="tab" role="tab" data-panel="publication" aria-selected="true">Publication</button>
@@ -43,8 +38,8 @@
   <main id="panel" class="panel is-active"></main>
 </div>
 
-<script src="data/site.js?v=141733"></script>
-<script src="assets/js/hero.js?v=141733"></script>
-<script src="assets/js/app.js?v=141733"></script>
+<script src="data/site.js?v=142606"></script>
+<script src="assets/js/hero.js?v=142606"></script>
+<script src="assets/js/app.js?v=142606"></script>
 </body>
 </html>

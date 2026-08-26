@@ -17,31 +17,40 @@ const SITE = {
     { key: "experiential", label: "Experiential", desc: "Designer experience in human-AI collaboration" }
   ],
 
-  /* 히어로 — 세 렌즈를 한꺼번에. 미디어는 자동재생 WebP */
+  /* 히어로 레일 — 축(key)별 대표 연구. spatial은 두 편. */
   heroLens: [
     {
       key: "spatial",
-      desc: "Behaviour-aware layout generation. Body dimensions become the unit of the plan \u2014 shoulder breadth, forward reach, and the clearance a person needs to actually use a room.",
       project: "Behavior-Aware Anthropometric Scene Generation",
       venue: "ACM CHI 2026",
+      note: "Body dimensions become the unit of the plan \u2014 shoulder breadth, forward reach, and the clearance a person needs to actually use a room.",
       media: "assets/img/hero/spatial.webp",
       transparent: true,
       href: "https://kindohyoku.github.io/BehaviorAware/"
     },
     {
+      key: "spatial",
+      project: "Human-operational 3D Indoor Layout Generation",
+      venue: "Automation in Construction 2026",
+      note: "An LLM-driven anthropometric simulator checks clearance, accessibility and alignment rules against the actions a room has to support.",
+      media: "assets/img/hero/spatial-2.webp",
+      transparent: false,
+      href: "https://seminjin.github.io/HumanOperationalScene/"
+    },
+    {
       key: "perceptual",
-      desc: "Crowd-based colour compatibility. The same room re-coloured and scored \u2014 saliency, harmony, and the palettes a crowd actually prefers.",
       project: "Blending Designer Insights with Crowd-Based Colour Compatibility",
       venue: "Color Research & Application 2026",
+      note: "The same room re-coloured and scored \u2014 saliency, harmony, and the palettes a crowd actually prefers.",
       media: "assets/img/hero/perceptual.webp",
       transparent: false,
       href: "https://seminjin.github.io/crowdbasedICE/"
     },
     {
       key: "experiential",
-      desc: "Designer\u2013AI collaboration. Sketch-guided and prompt-guided 3D generation pull the exploration in different directions; the designer keeps the one that holds.",
-      project: "The Impact of Sketch-guided vs. Prompt-guided 3D Generative AIs",
+      project: "Sketch-guided vs. Prompt-guided 3D Generative AIs",
       venue: "ACM CHI 2024",
+      note: "Two ways of asking pull the exploration in different directions; the designer keeps the one that holds.",
       media: "assets/img/hero/experiential.webp",
       transparent: false,
       href: "https://dl.acm.org/doi/fullHtml/10.1145/3613904.3642218"
