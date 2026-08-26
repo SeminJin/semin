@@ -17,17 +17,15 @@ const SITE = {
     { key: "experiential", label: "Experiential", desc: "Designer experience in human-AI collaboration" }
   ],
 
-  /* 히어로 — 실제 프로젝트 소스로 구성한 세 렌즈 */
+  /* 히어로 — 세 렌즈를 한꺼번에. 미디어는 자동재생 WebP */
   heroLens: [
     {
       key: "spatial",
       desc: "Behaviour-aware layout generation. Body dimensions become the unit of the plan \u2014 shoulder breadth, forward reach, and the clearance a person needs to actually use a room.",
       project: "Behavior-Aware Anthropometric Scene Generation",
       venue: "ACM CHI 2026",
-      main: "assets/img/hero/spatial.jpg",
-      alt: "assets/img/hero/spatial-alt.jpg",
-      motion: "assets/img/research_thumbs/chi2026.gif",
-      still: "assets/img/research_thumbs/chi2026.jpg",
+      media: "assets/img/hero/spatial.webp",
+      transparent: true,
       href: "https://kindohyoku.github.io/BehaviorAware/"
     },
     {
@@ -35,22 +33,18 @@ const SITE = {
       desc: "Crowd-based colour compatibility. The same room re-coloured and scored \u2014 saliency, harmony, and the palettes a crowd actually prefers.",
       project: "Blending Designer Insights with Crowd-Based Colour Compatibility",
       venue: "Color Research & Application 2026",
-      main: "assets/img/hero/perceptual.jpg",
-      alt: "",
-      motion: "assets/img/research_thumbs/cmlsearch.gif",
-      still: "assets/img/research_thumbs/cmlsearch.jpg",
+      media: "assets/img/hero/perceptual.webp",
+      transparent: false,
       href: "https://seminjin.github.io/crowdbasedICE/"
     },
     {
       key: "experiential",
-      desc: "Designer\u2013AI collaboration. One intent diverges into arrangements; the designer keeps the one that holds.",
-      project: "Workflow-Net \u2014 Node- vs. Prompt-Based Interfaces",
-      venue: "Archives of Design Research 2026",
-      main: "assets/img/hero/experiential.jpg",
-      alt: "",
-      motion: "assets/img/research_thumbs/sketch.gif",
-      still: "assets/img/research_thumbs/sketch.jpg",
-      href: "https://doi.org/10.15187/adr.2026.05.39.2.7"
+      desc: "Designer\u2013AI collaboration. Sketch-guided and prompt-guided 3D generation pull the exploration in different directions; the designer keeps the one that holds.",
+      project: "The Impact of Sketch-guided vs. Prompt-guided 3D Generative AIs",
+      venue: "ACM CHI 2024",
+      media: "assets/img/hero/experiential.webp",
+      transparent: false,
+      href: "https://dl.acm.org/doi/fullHtml/10.1145/3613904.3642218"
     }
   ],
 
@@ -87,8 +81,7 @@ const SITE = {
     {
       tags: ["spatial"],
       title: "Behavior-Aware Anthropometric Scene Generation for Human-Usable 3D Layouts",
-      thumb: "assets/img/research_thumbs/chi2026.jpg",
-      gif: "assets/img/research_thumbs/chi2026.gif",
+      thumb: "assets/img/research_thumbs/chi2026.webp",
       venue: "ACM CHI 2026 Paper", year: 2026, detail: "Barcelona, Spain",
       authors: "<b>Semin Jin</b>, Donghyuk Kim, Jeongmin Ryu, Kyung Hoon Hyun",
       index: "~SCIE TOP-TIER", field: "BKCSA003, h5-index=139",
@@ -101,8 +94,7 @@ const SITE = {
     {
       tags: ["spatial"],
       title: "Human-operational 3D Indoor Layout Generation with LLM-Driven Anthropometric Simulation",
-      thumb: "assets/img/research_thumbs/human-operational.jpg",
-      gif: "assets/img/research_thumbs/human-operational.gif",
+      thumb: "assets/img/research_thumbs/human-operational.webp",
       venue: "Automation in Construction", year: 2026, detail: "",
       authors: "<b>Semin Jin</b>, Kyung Hoon Hyun",
       index: "SCIE TOP 1%", field: "Construction & Building Technology, IF=11.5",
@@ -140,8 +132,7 @@ const SITE = {
     {
       tags: ["perceptual"],
       title: "CMLsearch: Semantic Visual Search and Simulation through Segmented Colour, Material, and Lighting in Interior Image",
-      thumb: "assets/img/research_thumbs/cmlsearch.jpg",
-      gif: "assets/img/research_thumbs/cmlsearch.gif",
+      thumb: "assets/img/research_thumbs/cmlsearch.webp",
       venue: "Journal of Computational Design and Engineering", year: 2025, detail: "",
       authors: "<b>Semin Jin</b>, Jiin Choi, Kyung Hoon Hyun",
       index: "SCIE", field: "Computer Science, Artificial Intelligence; Engineering, Multidisciplinary, IF=4.9",
@@ -154,8 +145,7 @@ const SITE = {
     {
       tags: ["experiential"],
       title: "The Impact of Sketch-guided vs. Prompt-guided 3D Generative AIs on the Design Exploration Process",
-      thumb: "assets/img/research_thumbs/sketch.jpg",
-      gif: "assets/img/research_thumbs/sketch.gif",
+      thumb: "assets/img/research_thumbs/sketch.webp",
       venue: "ACM CHI 2024 Paper", year: 2024, detail: "Honolulu, USA",
       authors: "Seung Won Lee, Tae Hee Joo, <b>Semin Jin</b>, Jiin Choi, Kyungwon Yun, Sergio Bromberg, Seonghoon Ban, Kyung Hoon Hyun",
       index: "~SCIE TOP-TIER", field: "BKCSA003, h5-index=113",

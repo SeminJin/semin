@@ -8,41 +8,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=202608261343">
+<link rel="stylesheet" href="assets/css/style.css?v=1">
 </head>
 <body>
 
 <!-- ══════════════════════════════════════════════════
-     HERO — 실제 연구 프로젝트 미디어
+     HERO
+     왼쪽: 이름 · 소개 · 연락처 · News
+     오른쪽: 세 렌즈를 한꺼번에 (자동재생)
      ══════════════════════════════════════════════════ -->
 <header class="hero">
   <div class="hero-text">
     <p class="hero-eyebrow">AI Design Computing &amp;<br>Human-Centered Design Evaluation</p>
     <h1 class="hero-name">Semin<br><em>Jin</em></h1>
-    <p class="hero-lede">I design how people and machines shape space together.</p>
-    <nav class="lens" role="tablist" aria-label="research lens">
-      <button class="lens-btn" role="tab" data-lens="spatial"      aria-selected="true">Spatial</button>
-      <button class="lens-btn" role="tab" data-lens="perceptual"   aria-selected="false">Perceptual</button>
-      <button class="lens-btn" role="tab" data-lens="experiential" aria-selected="false">Experiential</button>
-    </nav>
-    <p class="lens-desc" id="lens-desc"></p>
-    <a class="hero-scroll" href="#publication">Research <span>&darr;</span></a>
+    <div id="hero-id"></div>
   </div>
-  <div class="hero-scene" id="hero-scene"></div>
+  <div class="hero-lenses" id="hero-lenses"></div>
 </header>
 
 <!-- ══════════════════════════════════════════════════
-     MASTHEAD — 소개 + News (기존 우측 사이드바에서 승격)
-     ══════════════════════════════════════════════════ -->
-<section class="masthead">
-  <div class="wrap masthead-inner">
-    <div class="mast-bio"  id="mast-bio"></div>
-    <div class="mast-news" id="mast-news"></div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════
-     TABS
+     TABS → 바로 논문
      ══════════════════════════════════════════════════ -->
 <nav class="tabs">
   <div class="tabs-inner" role="tablist">
@@ -58,8 +43,8 @@
   <main id="panel" class="panel is-active"></main>
 </div>
 
-<script src="data/site.js?v=202608261343"></script>
-<script src="assets/js/hero.js?v=202608261343"></script>
-<script src="assets/js/app.js?v=202608261343"></script>
+<script src="data/site.js?v=1"></script>
+<script src="assets/js/hero.js?v=1"></script>
+<script src="assets/js/app.js?v=1"></script>
 </body>
 </html>

@@ -1,70 +1,48 @@
 /* ============================================================
    Semin Jin — Hero
-   세 렌즈를 실제 프로젝트 이미지로 보여준다.
-   앞 카드는 선명하고, 뒤 카드는 물러나 흐려진다.
-   GIF는 활성 카드에서만 불러온다.
+   왼쪽에 정체성(이름·소개·연락처·News), 오른쪽에 세 연구 렌즈.
+   렌즈 미디어는 애니메이션 WebP라 별도 스크립트 없이 자동재생된다.
    ============================================================ */
 (function () {
-  const stage = document.getElementById('hero-scene');
-  if (!stage || typeof SITE === 'undefined' || !SITE.heroLens) return;
+  if (typeof SITE === 'undefined') return;
 
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const L = SITE.heroLens;
-
-  /* ---------- 카드 조립 ---------- */
-  stage.innerHTML = `<div class="stack">${L.map((l, i) => `
-    <figure class="hcard" data-i="${i}" data-lens="${l.key}">
-      <div class="hcard-body">
-        <div class="hcard-main">
-          <img src="${l.main}" alt="${l.project}" ${i ? 'loading="lazy"' : ''}>
-        </div>
-        <div class="hcard-motion">
-          <img class="hmotion" src="${l.still}" data-gif="${l.motion}" alt="" loading="lazy">
-        </div>
+  /* ---------- 왼쪽: 소개 + 연락처 + News ---------- */
+  const id = document.getElementById('hero-id');
+  if (id) {
+    const lab = SITE.labs
+      .map(l => l.url ? `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>` : l.label)
+      .join(' and ');
+    id.innerHTML = `
+      <p class="hero-bio">
+        <b>${SITE.role}</b> at ${SITE.affiliation},
+        affiliated with the ${lab}.
+      </p>
+      <div class="hero-contact">
+        ${SITE.contact.map(c =>
+          `<a href="${c.url}" target="_blank" rel="noopener">${c.label}</a>`).join('')}
       </div>
-      <figcaption class="hcard-cap">
-        <span class="hcard-lens">${l.key}</span>
-        <a class="hcard-title" href="${l.href}" target="_blank" rel="noopener">${l.project}</a>
-        <span class="hcard-venue">${l.venue}</span>
-      </figcaption>
-    </figure>`).join('')}</div>`;
-
-  const cards = [...stage.querySelectorAll('.hcard')];
-  const btns  = [...document.querySelectorAll('.lens-btn')];
-  const desc  = document.getElementById('lens-desc');
-
-  /* ---------- GIF는 활성 카드에서만 ---------- */
-  function motion(card, on) {
-    const img = card.querySelector('.hmotion');
-    if (!img || reduce) return;
-    const gif = img.dataset.gif, still = img.dataset.still || img.getAttribute('src');
-    if (on) {
-      if (!img.dataset.still) img.dataset.still = still;
-      if (img.src.indexOf(gif) === -1) img.src = gif;
-    } else if (img.dataset.still) {
-      img.src = img.dataset.still;
-    }
+      <div class="hero-news">
+        <span class="news-h">New !</span>
+        <ul>${SITE.news.map(n =>
+          `<li><span class="d">${n.date}</span><span class="t">${n.text}</span></li>`).join('')}</ul>
+      </div>`;
   }
 
-  /* ---------- 상태 적용 ---------- */
-  let cur = 0;
-  function apply() {
-    cards.forEach((c, i) => {
-      const pos = (i - cur + cards.length) % cards.length;
-      c.className = 'hcard pos-' + pos;
-      c.setAttribute('aria-hidden', pos !== 0);
-      motion(c, pos === 0);
-    });
-    btns.forEach((b, i) => b.setAttribute('aria-selected', i === cur));
-    if (desc) desc.textContent = L[cur].desc;
+  /* ---------- 오른쪽: 세 렌즈 ---------- */
+  const host = document.getElementById('hero-lenses');
+  if (host && SITE.heroLens) {
+    host.innerHTML = SITE.heroLens.map((l, i) => `
+      <article class="lens-panel${l.transparent ? ' is-cutout' : ''}" data-lens="${l.key}">
+        <figure class="lens-media">
+          <img src="${l.media}" alt="${l.project}" ${i ? 'loading="lazy"' : ''}>
+        </figure>
+        <div class="lens-info">
+          <span class="lens-key">${l.key}</span>
+          <p class="lens-desc">${l.desc}</p>
+          <a class="lens-link" href="${l.href}" target="_blank" rel="noopener">
+            ${l.project} <span class="lens-venue">${l.venue}</span>
+          </a>
+        </div>
+      </article>`).join('');
   }
-  const go = i => { cur = (i + cards.length) % cards.length; apply(); };
-
-  btns.forEach((b, i) => b.addEventListener('click', () => go(i)));
-  cards.forEach((c, i) => c.addEventListener('click', e => {
-    if (e.target.closest('a')) return;          // 링크 클릭은 그대로 통과
-    if (!c.classList.contains('pos-0')) { e.preventDefault(); go(i); }
-  }));
-
-  apply();
 })();
