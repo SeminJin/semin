@@ -4,6 +4,53 @@
   const el = (t, c, h) => { const n = document.createElement(t); if (c) n.className = c; if (h != null) n.innerHTML = h; return n; };
   const links = (arr) => arr.map(l => `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join(' | ');
 
+  /* ---------- 푸터 ----------
+     히어로와 같은 어휘(φ 눈금선 · 교차 십자)를 아주 옅게 반복한다. */
+  const PHI = 1.6180339887;
+  function renderFooter() {
+    const el = $('#foot'); if (!el) return;
+    const rows = (() => {                       // 모듈러 수열 위치
+      const seg = [0, 1, 2, 3].map(i => Math.pow(1 / PHI, i));
+      const t = seg.reduce((a, b) => a + b, 0);
+      const p = []; let acc = 0;
+      seg.forEach(x => { p.push(acc / t); acc += x; });
+      return p.concat([1]);
+    })();
+    el.innerHTML = `
+      <svg class="foot-grid" aria-hidden="true" preserveAspectRatio="none"></svg>
+      <div class="wrap foot-inner">
+        <div class="foot-id">
+          <span class="foot-name">Semin Jin</span>
+          <a href="mailto:seminijin@gmail.com">seminijin@gmail.com</a>
+        </div>
+        <div class="foot-meta">
+          <span>Last updated ${SITE.updated}</span>
+        </div>
+      </div>`;
+    drawFootGrid(el);
+    addEventListener('resize', () => drawFootGrid(el));
+
+    function drawFootGrid(host) {
+      const svg = host.querySelector('.foot-grid'); if (!svg) return;
+      const r = host.getBoundingClientRect();
+      const W = r.width, H = r.height;
+      if (!W || !H) return;
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      svg.removeAttribute('preserveAspectRatio');
+      const cx = W * 0.5, Lx = W * 0.18, Rx = W * 0.82;
+      const p = [];
+      rows.forEach(q => {
+        const y = q * H;
+        p.push(`<line class="fg-rule" x1="0" y1="${y}" x2="${W}" y2="${y}"/>`);
+        [Lx, Rx].forEach(x =>
+          p.push(`<path class="fg-cross" d="M ${x - 9} ${y} H ${x + 9} M ${x} ${y - 9} V ${y + 9}"/>`));
+      });
+      [Lx, cx, Rx].forEach(x =>
+        p.push(`<line class="fg-vert" x1="${x}" y1="0" x2="${x}" y2="${H}"/>`));
+      svg.innerHTML = p.join('');
+    }
+  }
+
   /* ---------- 패널 ---------- */
   const panels = {
     publication() {
@@ -152,6 +199,7 @@
 
   function init() {
     if (typeof SITE === 'undefined') { console.error('site.js 로드 실패'); return; }
+    renderFooter();
     document.querySelectorAll('.tab').forEach(t =>
       t.addEventListener('click', () => activate(t.dataset.panel, true)));
     window.addEventListener('hashchange', () => activate(location.hash.slice(1) || 'publication', false));

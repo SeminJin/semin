@@ -304,6 +304,10 @@ img{max-width:100%; display:block}
 .hero-bio b{color:var(--ink); font-weight:500}
 .hero-bio a{color:var(--point); text-decoration:none; border-bottom:1px solid var(--accent-soft)}
 .hero-bio a:hover{border-bottom-color:var(--point)}
+.hero-statement{
+  margin:0; font-size:.86rem; line-height:1.62; color:var(--ink-3);
+  max-width:46ch; padding-left:.85rem; border-left:1px solid var(--line);
+}
 .hero-contact{display:flex; flex-wrap:wrap; gap:.35rem 1.2rem; font-size:.82rem}
 .hero-contact a{
   color:var(--ink-3); text-decoration:none;
@@ -440,4 +444,40 @@ img{max-width:100%; display:block}
   .lens-panel{transition:opacity .3s}
   .lens-panel.before,.lens-panel.after{transform:none}
   .rail-fill,.hatch{transition:none}
+}
+
+/* ============================================================
+   푸터 — 히어로의 격자 어휘를 아주 옅게 반복
+   ============================================================ */
+.foot{
+  position:relative; margin-top:var(--sp-xl);
+  border-top:1px solid var(--line); background:var(--bg);
+  min-height:180px; display:flex; align-items:center;
+}
+.foot-grid{position:absolute; inset:0; pointer-events:none; overflow:visible}
+.fg-rule{stroke:var(--line); stroke-width:.9; opacity:.45}
+.fg-vert{stroke:var(--line); stroke-width:.9; opacity:.3}
+.fg-cross{stroke:var(--ink-3); stroke-width:1; opacity:.22; fill:none}
+
+.foot-inner{
+  position:relative; z-index:1; width:100%;
+  display:flex; justify-content:space-between; align-items:flex-end;
+  gap:var(--sp-m); padding-top:var(--sp-m); padding-bottom:var(--sp-m);
+}
+@media (max-width:620px){
+  .foot-inner{flex-direction:column; align-items:flex-start; gap:.9rem}
+}
+.foot-id{display:grid; gap:.3rem}
+.foot-name{
+  font-family:var(--serif); font-size:1.5rem; color:var(--navy); line-height:1;
+}
+.foot-id a{
+  font-size:.78rem; color:var(--ink-3); text-decoration:none;
+  border-bottom:1px solid transparent; transition:color .18s, border-color .18s;
+  justify-self:start;
+}
+.foot-id a:hover{color:var(--point); border-bottom-color:var(--point)}
+.foot-meta{
+  font-family:var(--mono); font-size:.62rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-3);
 }

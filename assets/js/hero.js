@@ -31,7 +31,8 @@
         <h1 class="hero-name">Semin<br><em>Jin</em></h1>
       </div>
       <div class="who-block">
-        <p class="hero-bio"><b>${SITE.role}</b> at ${SITE.affiliation}, affiliated with the ${lab}.</p>
+        <p class="hero-bio"><b>${SITE.role}</b> at the ${lab}, ${SITE.affiliation}.</p>
+        <p class="hero-statement">${SITE.statement}</p>
         <div class="hero-contact">
           ${SITE.contact.filter(c => c.label !== 'GitHub').map(c =>
             `<a href="${c.url}" target="_blank" rel="noopener">${c.label}</a>`).join('')}

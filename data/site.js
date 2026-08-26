@@ -3,8 +3,11 @@
 
 const SITE = {
   name: "Semin Jin",
-  role: "Post-doctoral researcher in Interior Architecture Design",
-  affiliation: "Hanyang University, Seoul, Korea",
+  role: "Design computing researcher",
+  affiliation: "Hanyang University, Seoul",
+  /* 연구 철학 — CV 요약을 한 문장으로 */
+  statement: "I build AI-based generation for space, then test it against how bodies move, how surfaces are perceived, and how designers actually decide.",
+  updated: "August 2026",
   labs: [
     { label: "Design AILab", url: "https://designinformatics.hanyang.ac.kr/" },
     { label: "Human-Centered AI Design Institute", url: "" }
