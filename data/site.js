@@ -7,7 +7,7 @@ const SITE = {
   affiliation: "Hanyang University, Seoul",
   /* 연구 철학 — CV 요약을 한 문장으로 */
   statement: "I build AI-based generation for space, then test it against how bodies move, how surfaces are perceived, and how designers actually decide.",
-  updated: "August 2026",
+  updated: "October 2026",
   labs: [
     { label: "Design AILab", url: "https://designinformatics.hanyang.ac.kr/" },
     { label: "Human-Centered AI Design Institute", url: "" }
@@ -71,6 +71,7 @@ const SITE = {
   cv: "assets/files/Semin_Jin_CV.pdf",
 
   news: [
+    { date: "Oct, 2026", text: "Paper published in <b>International Journal of Human&ndash;Computer Interaction</b>." },
     { date: "Apr, 2026", text: "Paper accepted to <b>Archives of Design Research</b>." },
     { date: "Feb, 2026", text: "Paper accepted to <b>Automation in Construction</b>." },
     { date: "Feb, 2026", text: "Paper accepted to <b>CHI 2026</b> in Barcelona." },
@@ -78,6 +79,17 @@ const SITE = {
   ],
 
   publications: [
+    {
+      tags: ["experiential"],
+      title: "How Agent-Driven Creative Trace Mining Reshapes Design Behavior in a Deployment Study of Intent-Aligned Multimodal Design",
+      thumb: "assets/img/research_thumbs/designjournal.jpg",
+      venue: "International Journal of Human–Computer Interaction", year: 2026, detail: "1–37",
+      authors: "Seung Won Lee, Jiin Choi, Yejin Yun, <b>Semin Jin</b>, Yugyeong Jang, Geunmin Hwang, Sang Woon Park, Seonghoon Ban, Kyung Hoon Hyun",
+      index: "SCIE", field: "Computer Science, Cybernetics; Ergonomics, IF=6.1",
+      links: [
+        { label: "html", url: "https://doi.org/10.1080/10447318.2026.2739092" }
+      ]
+    },
     {
       tags: ["experiential"],
       title: "Workflow-Net: Toward Understanding Designer Workflows in Generative AI-Driven Systems through Comparing Node- and Prompt-Based Interfaces",
