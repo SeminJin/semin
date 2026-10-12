@@ -85,7 +85,7 @@ const SITE = {
       thumb: "assets/img/research_thumbs/designjournal.jpg",
       venue: "International Journal of Human–Computer Interaction", year: 2026, detail: "1–37",
       authors: "Seung Won Lee, Jiin Choi, Yejin Yun, <b>Semin Jin</b>, Yugyeong Jang, Geunmin Hwang, Sang Woon Park, Seonghoon Ban, Kyung Hoon Hyun",
-      index: "SCIE", field: "Computer Science, Cybernetics; Ergonomics, IF=6.1",
+      index: "SCIE", field: "Computer Science, Cybernetics; Ergonomics, IF=4.9",
       links: [
         { label: "html", url: "https://doi.org/10.1080/10447318.2026.2739092" }
       ]
@@ -230,8 +230,41 @@ const SITE = {
     }
   ],
 
+  /* ── Design Work ──────────────────────────────────────────────
+     갤러리 카드(그리드) + 프로젝트별 상세 페이지 (#design/slug)
+       kind  : 필터 카테고리 키 — workKinds 에서 라벨을 찾는다
+       slug  : 상세 페이지 주소 (#design/slug). 영문 소문자·하이픈
+       cover : 카드 대표 이미지 (생략하면 slides 의 첫 이미지)
+       slides: 상세 페이지에 순서대로 — {src, title, text} 또는 {video: youtubeId, title, text}
+               카드에 마우스를 올리면 slides 의 이미지들이 차례로 순환한다
+       links : (선택) [{label, url}] — 논문·프로젝트 페이지·영상 등
+     연구 프로젝트를 넣을 땐 kind: "research" 로 추가하면 필터가 자동으로 생긴다.
+     ──────────────────────────────────────────────────────────── */
+  workKinds: { spatial: "Spatial Design", research: "Research" },
+
   designWork: [
+    /* 연구 프로젝트 템플릿 — 주석을 풀고 내용을 채우면 된다
     {
+      kind: "research",
+      slug: "behavior-aware",
+      title: "Behavior-Aware Anthropometric Scene Generation",
+      meta: "ACM CHI 2026 · with Donghyuk Kim, Jeongmin Ryu, Kyung Hoon Hyun",
+      award: "",
+      year: 2026,
+      desc: "한두 문단 소개.",
+      cover: "assets/img/hero/spatial.webp",
+      links: [
+        { label: "paper", url: "https://doi.org/10.1145/3772318.3790341" },
+        { label: "project page", url: "https://kindohyoku.github.io/BehaviorAware/" }
+      ],
+      slides: [
+        { src: "assets/img/work/behavior-aware/01.jpg", title: "…", text: "…" },
+        { video: "youtubeId", title: "…", text: "…" }
+      ]
+    },
+    */
+    {
+      kind: "spatial",
       slug: "parasol-memory",
       title: "Parasol Memory, Manri Market",
       meta: "Graduation Project, Kaywon University of Art & Design, 2021",
@@ -248,6 +281,7 @@ const SITE = {
       ]
     },
     {
+      kind: "spatial",
       slug: "return-to-flow",
       title: "Return to Flow of Nature",
       meta: "International Invitation Exhibition (Korean Institute of Interior Design), 2022",
@@ -261,6 +295,7 @@ const SITE = {
       ]
     },
     {
+      kind: "spatial",
       slug: "super-block",
       title: "Super Block",
       meta: "2022",
@@ -274,6 +309,7 @@ const SITE = {
       ]
     },
     {
+      kind: "spatial",
       slug: "scenes-of-the-arcade",
       title: "Scenes of the Arcade",
       meta: "2022",

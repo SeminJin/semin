@@ -1,12 +1,12 @@
 # 디자인 프로젝트 이미지 넣는 곳
 
-프로젝트별 폴더에 그냥 넣으면 됩니다. 파일명은 아무거나 상관없고,
-**보이길 원하는 순서대로 이름이 정렬되게만** 해주세요 (01, 02, 03…).
-각 폴더의 첫 번째 이미지가 썸네일로 쓰입니다.
+프로젝트별 폴더에 넣고, `data/site.js`의 `designWork` 항목 `slides`에 순서대로 적으면 됩니다.
+카드 대표 이미지는 `cover` 또는 첫 번째 slide 이미지이고, 카드에 마우스를 올리면 slides 이미지가 차례로 바뀝니다.
+상세 페이지(`#design/slug`)에는 slides가 캡션과 함께 세로로 나열됩니다.
 
 - parasol-memory/        Parasol Memory, Manri Market (2021)
 - return-to-flow/        Return to Flow of Nature (2022)
 - super-block/           Super Block (2022)
 - scenes-of-the-arcade/  Scenes of the Arcade (2022)
 
-원본 해상도 그대로 넣어도 됩니다. 웹용 리사이즈·압축은 이쪽에서 처리합니다.
+연구 프로젝트는 같은 방식으로 폴더를 만들고 `kind: "research"`로 추가하면 필터가 자동으로 생깁니다.

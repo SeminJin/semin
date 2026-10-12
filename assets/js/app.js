@@ -83,46 +83,87 @@
       </article>`).join('');
     },
 
+    /* 디자인 워크 — 갤러리 그리드. 카드를 누르면 #design/slug 상세 페이지 */
     design() {
-      return SITE.designWork.map((w, wi) => {
-        const sl = w.slides || [];
-        const stage = sl.map((s, i) => s.video
-          ? `<div class="slide${i ? '' : ' on'}" data-i="${i}">
-               <iframe loading="lazy" src="https://www.youtube-nocookie.com/embed/${s.video}"
-                 title="${w.title} — ${s.title}" frameborder="0" allowfullscreen
-                 allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-             </div>`
-          : `<div class="slide${i ? '' : ' on'}" data-i="${i}">
-               <img src="${s.src}" alt="${w.title} — ${s.title}" loading="lazy">
-             </div>`).join('');
+      const works = SITE.designWork;
+      const kinds = [...new Set(works.map(w => w.kind))];
+      const label = k => (SITE.workKinds || {})[k] || k;
 
-        const thumbs = sl.map((s, i) => s.video
-          ? `<button class="thumb${i ? '' : ' on'}" data-i="${i}" title="${s.title}"
-                     aria-label="${s.title}"><span class="thumb-play">&#9654;</span></button>`
-          : `<button class="thumb${i ? '' : ' on'}" data-i="${i}" title="${s.title}"
-                     aria-label="${s.title}"><img src="${s.src}" alt="" loading="lazy"></button>`).join('');
+      const filter = kinds.length > 1 ? `<div class="filters" role="group" aria-label="filter">
+          <button class="filter${workFilter === 'all' ? ' on' : ''}" data-kind="all">All
+            <span class="n">${works.length}</span></button>
+          ${kinds.map(k => `<button class="filter${workFilter === k ? ' on' : ''}" data-kind="${k}">${label(k)}
+            <span class="n">${works.filter(w => w.kind === k).length}</span></button>`).join('')}
+        </div>` : '';
 
-        const caps = sl.map((s, i) => `<div class="cap${i ? '' : ' on'}" data-i="${i}">
-            <h4 class="cap-title">${s.title}</h4>
-            <p class="cap-text">${s.text}</p>
-          </div>`).join('');
-
-        return `<article class="work" data-w="${wi}">
-          <h3 class="work-title">${w.title}</h3>
-          <p class="work-meta">${w.meta}</p>
-          ${w.award ? `<p class="award">${w.award}</p>` : ''}
-          ${sl.length ? `<div class="slider" data-count="${sl.length}">
-            <div class="stage">${stage}
-              <button class="nav prev" aria-label="previous">&#8249;</button>
-              <button class="nav next" aria-label="next">&#8250;</button>
-              <span class="counter">01 / ${String(sl.length).padStart(2, '0')}</span>
-            </div>
-            <div class="thumbs">${thumbs}</div>
-            <div class="caps">${caps}</div>
-          </div>` : ''}
-          <p class="work-desc">${w.desc}</p>
-        </article>`;
+      const cards = works.map(w => {
+        const imgs = workImages(w);
+        return `<a class="card" href="#design/${w.slug}" data-kind="${w.kind}"
+                   ${workFilter !== 'all' && w.kind !== workFilter ? 'hidden' : ''}>
+          <div class="card-media">
+            ${imgs.map((src, i) => i
+              ? `<img class="card-img" data-src="${src}" alt="">`
+              : `<img class="card-img on" src="${src}" alt="" loading="lazy">`).join('')}
+            ${imgs.length > 1 ? `<span class="card-dots" aria-hidden="true">${imgs.map((_, i) =>
+                `<i${i ? '' : ' class="on"'}></i>`).join('')}</span>` : ''}
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${w.title}</h3>
+            <p class="card-meta">
+              <span>${label(w.kind)}</span><span class="sep">&middot;</span><span>${w.year}</span>
+              ${w.award ? `<span class="sep">&middot;</span><span class="card-award">${w.award}</span>` : ''}
+            </p>
+          </div>
+        </a>`;
       }).join('');
+
+      return `${filter}<div class="grid">${cards}</div>`;
+    },
+
+    /* 디자인 워크 — 상세 페이지 */
+    designDetail(slug) {
+      const works = SITE.designWork;
+      const i = works.findIndex(w => w.slug === slug);
+      if (i < 0) return null;
+      const w = works[i];
+      const label = (SITE.workKinds || {})[w.kind] || w.kind;
+      const prev = works[(i - 1 + works.length) % works.length];
+      const next = works[(i + 1) % works.length];
+
+      const figs = (w.slides || []).map((s, n) => `<figure class="fig">
+          ${s.video
+            ? `<div class="fig-video"><iframe loading="lazy"
+                 src="https://www.youtube-nocookie.com/embed/${s.video}"
+                 title="${w.title} — ${s.title}" frameborder="0" allowfullscreen
+                 allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>`
+            : `<img src="${s.src}" alt="${w.title} — ${s.title}" ${n ? 'loading="lazy"' : ''}>`}
+          <figcaption class="fig-cap">
+            <span class="fig-n">${String(n + 1).padStart(2, '0')}</span>
+            <h4 class="fig-title">${s.title}</h4>
+            <p class="fig-text">${s.text}</p>
+          </figcaption>
+        </figure>`).join('');
+
+      return `<article class="project">
+        <a class="back" href="#design">&larr; Design Work</a>
+        <header class="project-head">
+          <div class="project-id">
+            <p class="project-kind">${label} &middot; ${w.year}</p>
+            <h2 class="project-title">${w.title}</h2>
+            <p class="project-meta">${w.meta}</p>
+            ${w.award ? `<p class="award">${w.award}</p>` : ''}
+          </div>
+          <div class="project-intro">
+            <p class="project-desc">${w.desc}</p>
+            ${w.links && w.links.length ? `<div class="project-links">${links(w.links)}</div>` : ''}
+          </div>
+        </header>
+        <div class="project-body">${figs}</div>
+        <nav class="project-nav" aria-label="projects">
+          <a href="#design/${prev.slug}"><span class="k">&larr; Previous</span><span class="t">${prev.title}</span></a>
+          <a href="#design/${next.slug}" class="r"><span class="k">Next &rarr;</span><span class="t">${next.title}</span></a>
+        </nav>
+      </article>`;
     },
 
     teaching() {
@@ -145,42 +186,74 @@
     }
   };
 
-  /* ---------- 슬라이더 ---------- */
-  function bindSliders(root) {
-    root.querySelectorAll('.slider').forEach(sl => {
-      const slides = [...sl.querySelectorAll('.slide')];
-      const thumbs = [...sl.querySelectorAll('.thumb')];
-      const caps   = [...sl.querySelectorAll('.cap')];
-      const counter = sl.querySelector('.counter');
-      let cur = 0;
+  /* ---------- 디자인 워크: 카드 이미지 순환 + 필터 ---------- */
+  let workFilter = 'all';                       // 상세 페이지 다녀와도 필터 유지
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NO_HOVER = matchMedia('(hover: none)').matches;
 
-      const go = i => {
-        cur = (i + slides.length) % slides.length;
-        slides.forEach((s, n) => s.classList.toggle('on', n === cur));
-        thumbs.forEach((t, n) => t.classList.toggle('on', n === cur));
-        caps.forEach((c, n) => c.classList.toggle('on', n === cur));
-        counter.textContent =
-          `${String(cur + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-        // 보이지 않는 슬라이드의 영상은 정지
-        slides.forEach((s, n) => {
-          const f = s.querySelector('iframe');
-          if (f && n !== cur) f.src = f.src;
-        });
+  /* 카드에 쓸 이미지 목록: cover → slides 의 이미지(영상 제외) */
+  function workImages(w) {
+    const list = (w.slides || []).filter(s => s.src).map(s => s.src);
+    if (w.cover) list.unshift(w.cover);
+    return [...new Set(list)];
+  }
+
+  function bindGallery(root) {
+    /* 필터 */
+    root.querySelectorAll('.filter').forEach(b => b.addEventListener('click', () => {
+      workFilter = b.dataset.kind;
+      root.querySelectorAll('.filter').forEach(x => x.classList.toggle('on', x === b));
+      root.querySelectorAll('.card').forEach(c =>
+        c.toggleAttribute('hidden', workFilter !== 'all' && c.dataset.kind !== workFilter));
+    }));
+
+    /* 이미지 순환 — 마우스를 올리면 slides 가 차례로 바뀐다 (터치 기기는 보일 때 자동) */
+    root.querySelectorAll('.card').forEach(card => {
+      const imgs = [...card.querySelectorAll('.card-img')];
+      const dots = [...card.querySelectorAll('.card-dots i')];
+      if (imgs.length < 2 || REDUCED) return;
+      let cur = 0, timer = null, loaded = false;
+
+      const load = () => {                      // 처음 올렸을 때만 나머지 이미지를 받는다
+        if (loaded) return; loaded = true;
+        imgs.forEach(im => { if (im.dataset.src) { im.src = im.dataset.src; delete im.dataset.src; } });
       };
+      const show = i => {
+        cur = (i + imgs.length) % imgs.length;
+        imgs.forEach((im, n) => im.classList.toggle('on', n === cur));
+        dots.forEach((d, n) => d.classList.toggle('on', n === cur));
+      };
+      const start = ms => { load(); stop(); timer = setInterval(() => show(cur + 1), ms); };
+      const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
 
-      thumbs.forEach((t, i) => t.addEventListener('click', () => go(i)));
-      sl.querySelector('.prev').addEventListener('click', () => go(cur - 1));
-      sl.querySelector('.next').addEventListener('click', () => go(cur + 1));
-      sl.setAttribute('tabindex', '0');
-      sl.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft')  { e.preventDefault(); go(cur - 1); }
-        if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
-      });
+      if (NO_HOVER) {                           // 터치: 화면에 들어오면 천천히 순환
+        new IntersectionObserver(([e]) => e.isIntersecting ? start(2200) : stop(),
+          { threshold: .6 }).observe(card);
+      } else {
+        card.addEventListener('mouseenter', () => { show(1); start(900); });
+        card.addEventListener('mouseleave', () => { stop(); show(0); });
+        card.addEventListener('focus', () => { show(1); start(900); });
+        card.addEventListener('blur',  () => { stop(); show(0); });
+      }
     });
   }
 
-  /* ---------- 탭 전환 ---------- */
-  function activate(key, push) {
+  /* ---------- 라우팅: #탭 또는 #design/slug ---------- */
+  const TAB_LABEL = { publication: 'Publication', patent: 'Patent', design: 'Design Work',
+                      teaching: 'Teaching & Academic Service', cv: 'CV' };
+
+  function scrollToPanel() {
+    const tabs = $('.tabs'); if (!tabs) return;
+    const top = tabs.getBoundingClientRect().top + scrollY;
+    if (Math.abs(scrollY - top) > 4) scrollTo({ top, behavior: REDUCED ? 'auto' : 'smooth' });
+  }
+
+  /* route: "design/parasol-memory" 처럼 해시 전체.
+     opts.push  — 탭 클릭: 주소를 바꾼다 (히스토리 안 쌓음)
+     opts.track — GA 에 화면으로 기록
+     opts.scroll — 패널 상단으로 스크롤 */
+  function activate(route, opts = {}) {
+    const [key, sub] = (route || 'publication').split('/');
     const tabs = document.querySelectorAll('.tab');
     let found = false;
     tabs.forEach(t => {
@@ -188,21 +261,31 @@
       if (on) found = true;
       t.setAttribute('aria-selected', on);
     });
-    if (!found) return activate('publication', push);
+    if (!found) return activate('publication', opts);
 
     const host = $('#panel');
-    host.innerHTML = panels[key] ? panels[key]() : '';
-    if (key === 'design') bindSliders(host);
+    let html = null, title = TAB_LABEL[key] || key;
+    if (key === 'design' && sub) {
+      html = panels.designDetail(sub);
+      if (html === null) return activate('design', { ...opts, push: true });   // 없는 slug → 갤러리
+      const w = SITE.designWork.find(x => x.slug === sub);
+      title = w.title;
+    } else {
+      html = panels[key] ? panels[key]() : '';
+    }
+    host.innerHTML = html;
+    if (key === 'design' && !sub) bindGallery(host);
     host.className = 'panel is-active';
-    if (push && location.hash.slice(1) !== key) history.replaceState(null, '', '#' + key);
 
-    /* 탭도 하나의 화면으로 기록 — 해시만 바뀌면 GA가 잡지 못한다 */
-    if (push && typeof gtag === 'function') {
-      const label = { publication: 'Publication', patent: 'Patent', design: 'Design Work',
-                      teaching: 'Teaching & Academic Service', cv: 'CV' }[key] || key;
+    const want = sub ? `${key}/${sub}` : key;
+    if (opts.push && location.hash.slice(1) !== want) history.replaceState(null, '', '#' + want);
+    if (opts.scroll) scrollToPanel();
+
+    /* 탭·프로젝트 페이지도 하나의 화면으로 기록 — 해시만 바뀌면 GA가 잡지 못한다 */
+    if (opts.track && typeof gtag === 'function') {
       gtag('event', 'page_view', {
-        page_title: 'Semin Jin — ' + label,
-        page_location: location.origin + location.pathname + '#' + key
+        page_title: 'Semin Jin — ' + title,
+        page_location: location.origin + location.pathname + '#' + want
       });
     }
   }
@@ -211,9 +294,12 @@
     if (typeof SITE === 'undefined') { console.error('site.js 로드 실패'); return; }
     renderFooter();
     document.querySelectorAll('.tab').forEach(t =>
-      t.addEventListener('click', () => activate(t.dataset.panel, true)));
-    window.addEventListener('hashchange', () => activate(location.hash.slice(1) || 'publication', false));
-    activate(location.hash.slice(1) || 'publication', false);
+      t.addEventListener('click', () => activate(t.dataset.panel, { push: true, track: true })));
+    /* 카드·뒤로가기·이전/다음 링크는 해시를 바꾸므로 여기서 받는다 */
+    window.addEventListener('hashchange', () =>
+      activate(location.hash.slice(1) || 'publication', { track: true, scroll: true }));
+    const first = location.hash.slice(1) || 'publication';
+    activate(first, { scroll: first.includes('/') });   // 프로젝트 링크로 들어오면 바로 그 자리로
   }
 
   document.readyState === 'loading'
