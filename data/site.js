@@ -265,6 +265,21 @@ const SITE = {
     */
     {
       kind: "spatial",
+      slug: "colorverse-metaverse",
+      title: "Colorverse: A Metaverse Where K-pop Stars and Fans Meet",
+      meta: "Industry–academia project with Colorverse (a Kakao Games subsidiary), Hanyang Design Informatics Lab, 2023",
+      award: "",
+      year: 2023,
+      cover: "assets/img/work/colorverse/cover.jpg",
+      desc: "Colorverse, a Kakao Games subsidiary, commissioned a study on a metaverse service where K-pop stars and fans meet. Starting from a survey of Korean and Chinese fans, the project proposes a variable spatial system—human-scale modules on a hexagonal grid—stacked in two vertical layers: an Event Land where fans take part in quizzes, exhibitions, and live parties with the star, and a Spectating Land where they watch from above, together on a shared display, or by dropping in as a ghost.",
+      slides: [
+        { src: "assets/img/work/colorverse/01.jpg", title: "Concept: A Two-Layer Metaverse", text: "A survey of 55 fans (14 Korean, 41 Chinese) revealed different needs: Korean fans wanted stages and events, Chinese fans wanted direct exchange with stars, and both wanted video and chat combined. Because star events are short-lived, the space is designed to be variable—a modular system stacked into an Event Land for participation and a Spectating Land for watching." },
+        { src: "assets/img/work/colorverse/02.jpg", title: "Grid & Module System", text: "Modules are sized to a 1,600 mm avatar. A hexagonal grid tiles the world without gaps and circles form the smallest unit, giving three modules: corridor-like Module 1 that induces movement, Module 2 for staying and talking, and the hexagonal Module 3 plaza for communication and spectating—each with plan and volume variations." },
+        { src: "assets/img/work/colorverse/03.jpg", title: "Interaction Scenarios", text: "In Event Land, Module 2 hosts static events such as quizzes and OX games, Module 1 strings goods exhibitions and photo spots along a corridor, and Module 3 holds live parties and fan meetings on a three-sided screen with the star's chat overhead. In Spectating Land above, fans look down through openings, watch together on a shared display, or pass through a portal to observe Layer 1 first-person as a ghost." }
+      ]
+    },
+    {
+      kind: "spatial",
       slug: "parasol-memory",
       title: "Parasol Memory, Manri Market",
       meta: "Graduation Project, Kaywon University of Art & Design, 2021",
