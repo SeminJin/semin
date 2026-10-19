@@ -368,8 +368,10 @@ const SITE = {
   ],
 
   service: [
-    "Reviewer, ACM UIST (2024–2026)",
-    "Reviewer, ACM Creativity & Cognition (2026)",
-    "Reviewer, Frontiers of Architectural Research (2026)"
+    "Reviewer, ACM CHI (2024–present)",
+    "Reviewer, ACM UIST (2024–present)",
+    "Reviewer, ACM Creativity & Cognition (2026–present)",
+    "Reviewer, Archives of Design Research (2024–present)",
+    "Reviewer, Frontiers of Architectural Research (2026–present)"
   ]
 };
