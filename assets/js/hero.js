@@ -27,20 +27,18 @@
       .map(l => l.url ? `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>` : l.label)
       .join(' and ');
     text.innerHTML = `
-      <div class="id-block">
-        <p class="hero-eyebrow">AI Design Computing &amp; Human-Centered Design Evaluation</p>
-        <h1 class="hero-name">Semin<br><em>Jin</em></h1>
-      </div>
-      <div class="who-block">
-        <p class="hero-bio"><b>${SITE.role}</b> at the ${lab}, ${SITE.affiliation}.</p>
-        <p class="hero-statement">${SITE.statement}</p>
+      <div class="intro">
+        <p class="hero-label">AI Design Computing &amp; Human-Centered Design Evaluation</p>
+        <h1 class="hero-name">Semin Jin</h1>
+        <p class="hero-lede">${SITE.statement}</p>
+        <p class="hero-affil">${SITE.role} at the ${lab}, ${SITE.affiliation}.</p>
         <div class="hero-contact">
           ${SITE.contact.filter(c => c.label !== 'GitHub').map(c =>
             `<a href="${c.url}" target="_blank" rel="noopener">${c.label}</a>`).join('')}
         </div>
       </div>
       <div class="news-block">
-        <p class="news-h">New !</p>
+        <p class="hero-label">News</p>
         <ul>${SITE.news.map(n =>
           `<li><span class="d">${n.date}</span><span class="t">${n.text}</span></li>`).join('')}</ul>
       </div>`;
@@ -140,6 +138,13 @@
     host.style.width  = w + 'px';
     host.style.top    = (rr.top - hb.top - rr.height * 0.02) + 'px';
     host.style.left   = (rr.left - hb.left - w + 26) + 'px';
+    /* 텍스트가 인체 그림 밑으로 들어가지 않게, 그림 왼쪽 끝에서 24px 앞까지만 쓴다 */
+    const tx = document.querySelector('.hero-text');
+    if (tx) {
+      if (isNarrow()) { tx.style.maxWidth = ''; return; }
+      const figL = rr.left - w + 26, txL = tx.getBoundingClientRect().left;
+      tx.style.maxWidth = Math.max(300, figL - txL - 24) + 'px';
+    }
   }
 
   /* ---------- 가운데 레일 ---------- */
@@ -338,7 +343,7 @@
     target.addEventListener('touchend', () => { tracking = false; decided = null; }, { passive: true });
   }
 
-  layoutNodes(); drawArcs(); drawPlate(); drawFigure(); apply();
-  if (window.ResizeObserver) new ResizeObserver(() => { layoutNodes(); drawArcs(); drawPlate(); drawFigure(); apply(); }).observe(rail);
-  else addEventListener('resize', () => { layoutNodes(); drawArcs(); drawPlate(); drawFigure(); apply(); });
+  layoutNodes(); drawArcs(); drawFigure(); drawPlate(); apply();
+  if (window.ResizeObserver) new ResizeObserver(() => { layoutNodes(); drawArcs(); drawFigure(); drawPlate(); apply(); }).observe(rail);
+  else addEventListener('resize', () => { layoutNodes(); drawArcs(); drawFigure(); drawPlate(); apply(); });
 })();

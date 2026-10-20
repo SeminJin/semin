@@ -20,7 +20,7 @@
       <svg class="foot-grid" aria-hidden="true" preserveAspectRatio="none"></svg>
       <div class="wrap foot-inner">
         <div class="foot-id">
-          <span class="foot-name">Semin Jin</span>
+          <span class="foot-name">Semin Jin <span class="foot-ko" lang="ko">진세민</span></span>
           <a href="mailto:seminijin@gmail.com">seminijin@gmail.com</a>
         </div>
         <div class="foot-meta">

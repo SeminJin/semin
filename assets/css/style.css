@@ -370,53 +370,50 @@ img{max-width:100%; display:block}
   .hero{grid-template-columns:1fr; min-height:0; row-gap:var(--sp-m); padding:var(--sp-m)}
 }
 
-/* ---------- 왼쪽 : 촘촘하게 ---------- */
-.hero-text{display:flex; flex-direction:column; gap:1.9rem}
-.id-block{display:grid; gap:1rem}
-.hero-eyebrow{
-  margin:0; font-family:var(--mono); font-size:.66rem; letter-spacing:.2em;
-  text-transform:uppercase; color:var(--point); line-height:1.7;
+/* ---------- 왼쪽 텍스트 ----------
+   글꼴: 세리프 = 이름·연구 소개(목소리) / 산세리프 = 사실 정보 / 모노 = 라벨
+   색  : 남색 = 이름 / ink = 소개 문장 / ink-2 = 사실 정보 / ink-3 = 날짜 / point = 라벨·본문 링크
+   크기: 라벨 .66rem · 정보 .875rem · 소개 1.3rem · 이름
+   여백: 라벨→내용 .75rem · 역할 사이 1.5rem · 덩어리 사이 3rem */
+.hero-text{display:flex; flex-direction:column; gap:clamp(2rem,5.5vh,3rem); max-width:34rem}
+/* 라벨은 인체 그림보다 위에 있어 넓은 화면에선 단 폭을 넘어가도 겹치지 않는다 — 한 줄 유지 */
+@media (min-width:981px){.intro .hero-label{white-space:nowrap}}
+.intro{display:grid; justify-items:start}
+.hero-label{
+  margin:0; font-family:var(--mono); font-size:.66rem; font-weight:400; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--point); line-height:1.6;
 }
-@media (max-width:720px){.hero-eyebrow{font-size:.58rem; letter-spacing:.13em}}
+@media (max-width:720px){.hero-label{font-size:.6rem; letter-spacing:.14em}}
 .hero-name{
   font-family:var(--serif); font-weight:400;
-  font-size:clamp(3rem,6.4vw,5.2rem); line-height:.9;
-  letter-spacing:-.03em; margin:0; color:var(--navy);
+  font-size:clamp(3rem,6.4vw,5.2rem); line-height:.95;
+  letter-spacing:-.03em; margin:.75rem 0 0; color:var(--navy); white-space:nowrap;
 }
-.hero-name em{font-style:italic; color:var(--point)}
-
-.who-block{display:grid; gap:.7rem}
-.hero-bio{
-  font-family:var(--serif); font-size:1.08rem; line-height:1.55;
-  color:var(--ink-2); margin:0; max-width:44ch;
+.hero-lede{
+  margin:1.5rem 0 0; font-family:var(--serif); font-size:clamp(1.15rem,1.6vw,1.3rem); line-height:1.42;
+  color:var(--ink); max-width:30ch; text-wrap:pretty;
 }
-.hero-bio b{color:var(--ink); font-weight:500}
-.hero-bio a{color:var(--point); text-decoration:none; border-bottom:1px solid var(--accent-soft)}
-.hero-bio a:hover{border-bottom-color:var(--point)}
-.hero-statement{
-  margin:0; font-size:.86rem; line-height:1.62; color:var(--ink-3);
-  max-width:46ch; padding-left:.85rem; border-left:1px solid var(--line);
-}
-.hero-contact{display:flex; flex-wrap:wrap; gap:.35rem 1.2rem; font-size:.82rem}
+.hero-affil{margin:1.5rem 0 0; font-size:.875rem; line-height:1.6; color:var(--ink-2); max-width:44ch}
+.hero-affil a{color:var(--point); text-decoration:none; border-bottom:1px solid var(--accent-soft)}
+.hero-affil a:hover{border-bottom-color:var(--point)}
+/* 따로 놓인 링크 목록은 위치만으로 링크임이 보이므로 ink-2, 올리면 point */
+/* 연락처 4개는 두 종류(이메일 · 프로필)라 두 줄로 나눠 세운다 — 폭에 따라 하나만 떨어지지 않게 */
+.hero-contact{display:grid; grid-template-columns:repeat(2,max-content); justify-content:start; gap:.25rem 1.5rem; margin-top:.75rem; font-size:.875rem}
 .hero-contact a{
-  color:var(--ink-3); text-decoration:none;
+  color:var(--ink-2); text-decoration:none;
   border-bottom:1px solid transparent; transition:color .18s,border-color .18s;
 }
 .hero-contact a:hover{color:var(--point); border-bottom-color:var(--point)}
 
-.news-h{
-  margin:0 0 .6rem; color:var(--point);
-  font-family:var(--mono); font-size:.64rem; font-weight:700;
-  letter-spacing:.18em; text-transform:uppercase;
-}
-.news-block ul{margin:0; padding:0; display:grid; gap:.2rem}
+.news-block{display:grid; gap:.75rem}
+.news-block ul{margin:0; padding:0; display:grid; gap:.35rem}
 .news-block li{
-  list-style:none; display:grid; grid-template-columns:4.6rem 1fr; gap:.65rem;
-  color:var(--ink-2); font-size:.8rem; line-height:1.45;
+  list-style:none; display:grid; grid-template-columns:5.25rem minmax(0,1fr); gap:.75rem;
+  color:var(--ink-2); font-size:.875rem; line-height:1.5;
 }
-.news-block .d{color:var(--ink-3); font-variant-numeric:tabular-nums; font-size:.73rem}
+.news-block .d{color:var(--ink-3); font-variant-numeric:tabular-nums}
 .news-block .t{display:block}
-.news-block b{color:var(--ink); font-weight:600}
+.news-block b{color:var(--ink); font-weight:500}
 
 /* ---------- 가운데 레일 : 짧게, 미디어에 맞춰 ---------- */
 .lens-rail{position:relative; width:var(--rail-w); height:clamp(300px,46svh,440px)}
@@ -557,6 +554,7 @@ img{max-width:100%; display:block}
   .foot-inner{flex-direction:column; align-items:flex-start; gap:.9rem}
 }
 .foot-id{display:grid; gap:.3rem}
+.foot-ko{margin-left:.35em; font-family:var(--sans); font-size:.6em; letter-spacing:0; color:var(--ink-3)}
 .foot-name{
   font-family:var(--serif); font-size:1.5rem; color:var(--navy); line-height:1;
 }
@@ -582,14 +580,10 @@ img{max-width:100%; display:block}
   }
 
   /* ── 왼쪽 덩어리들 ── */
-  .hero-text{gap:1.7rem}                  /* 그룹 사이 */
-  .id-block{gap:.7rem}                    /* 눈썹 ↔ 이름 : 한 덩어리 */
+  .hero-text{gap:2.5rem; max-width:none} /* 덩어리 사이 — 데스크탑보다 한 단계 좁게 */
   .hero-name{font-size:clamp(2.6rem,13vw,3.6rem)}
-  .who-block{gap:.75rem}                  /* 소개 ↔ 철학 ↔ 연락처 */
-  .hero-statement{font-size:.82rem; padding-left:.7rem}
-  .hero-contact{gap:.4rem 1rem; font-size:.78rem}
-  .news-block ul{gap:.4rem}
-  .news-h{margin-bottom:.55rem}
+  .hero-lede{font-size:1.15rem; margin-top:1.25rem}
+  .hero-affil{margin-top:1.25rem}
 
   /* ── 가운데: 가로 레일 ── */
   .lens-rail{
@@ -632,5 +626,5 @@ img{max-width:100%; display:block}
     align-items:baseline; padding-top:.45rem; border-top:1px solid var(--line);
   }
   .axis.on{border-top-color:var(--point)}
-  .hero-news li{grid-template-columns:4.2rem 1fr; gap:.5rem}
+  .news-block li{grid-template-columns:4.75rem minmax(0,1fr); gap:.6rem}
 }
