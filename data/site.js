@@ -150,7 +150,8 @@ const SITE = {
       authors: "Jaehyun Seo, <b>Semin Jin</b>, Kyungah Choi, Kyung Hoon Hyun, Junegak Joung",
       index: "SCIE TOP 2%", field: "Computer Science, Artificial Intelligence; Multidisciplinary, IF=9.9",
       links: [
-        { label: "html", url: "https://doi.org/10.1016/j.aei.2025.103879" }
+        { label: "html", url: "https://doi.org/10.1016/j.aei.2025.103879" },
+        { label: "pdf",  url: "https://www.sciencedirect.com/science/article/pii/S1474034625007724/pdfft" }
       ]
     },
     {
@@ -238,6 +239,9 @@ const SITE = {
        slides: 상세 페이지에 순서대로 — {src, title, text} 또는 {video: youtubeId, title, text}
                카드에 마우스를 올리면 slides 의 이미지들이 차례로 순환한다
        links : (선택) [{label, url}] — 논문·프로젝트 페이지·영상 등
+       slides 에 {embed: "tools/…/", title, text} 를 넣으면 인터랙티브 도구가 프레임으로 들어간다
+       slide 에 cardOnly: true 를 넣으면 카드 순환 이미지로만 쓰이고 상세 페이지에는 안 나온다
+       related: (선택) [{title, note}] — publications 의 제목과 똑같이 적으면 썸네일·pdf·html 링크를 가져온다
      연구 프로젝트를 넣을 땐 kind: "research" 로 추가하면 필터가 자동으로 생긴다.
      ──────────────────────────────────────────────────────────── */
   workKinds: { tool: "Design Tools", spatial: "Spatial Design", research: "Research" },
@@ -263,6 +267,30 @@ const SITE = {
       ]
     },
     */
+    {
+      kind: "tool",
+      slug: "room-strata",
+      title: "Room Strata",
+      meta: "Interactive color tool built on 35,575 crowdsourced interior photos, 2026",
+      award: "",
+      year: 2026,
+      cover: "assets/img/work/room-strata/01.jpg",
+      desc: "A color picker cut from real rooms. Each of eight interior styles is drawn as a section, its colors stacked from ceiling to floor at the height where they appear in photos. Height picks the color; the horizontal axis frees its saturation from 0 to 100%. A tick on every band marks how saturated that color is in the photos, usually far less than people remember, so the tool shows both the room as photographed and the palette it could become.",
+      slides: [
+        { embed: "tools/room-strata/", title: "Pick from a room", text: "Choose a style along the top, then pick a band in the section. The tick on each band is where that color sits in real photos; drag right for a more vivid version with the same hue and lightness. Signature shows only what sets the style apart; Whole room shows every color by area. Each color also lists the objects and materials it was measured on, and how common it is in the other seven styles." },
+        { src: "assets/img/work/room-strata/01.jpg", title: "Signature sections", text: "About 4M object segments, each with a measured color, material and position, are grouped into 240 colors. A band is one color, placed at its average height in the photos and drawn from grey (left) to the most vivid version a screen can show (right). Band thickness is share × (lift − 1): how much more a style uses the color than the average of all eight styles, with small styles pulled toward that average." },
+        { src: "assets/img/work/room-strata/02.jpg", title: "The whole room, as photographed", text: "The same eight sections weighted by area, walls and floors included, at the saturation measured in photos. Most of every room is neutral or wood; what tells the styles apart lives in thin bands, which is why the tool opens on Signature." },
+        { src: "assets/img/work/room-strata/03.jpg", cardOnly: true, title: "Interface", text: "Picked colors copy as HEX, RGB, HSL or OKLCH. Pasting a color finds the band it belongs to in the current style and reports how far it is from what real rooms use." }
+      ],
+      related: [
+        { title: "CMLsearch: Semantic Visual Search and Simulation through Segmented Colour, Material, and Lighting in Interior Image",
+          note: "Segments interior photos into objects and measures each one's color, material and lighting. Every band in Room Strata is built from these per-object measurements." },
+        { title: "An Explainable AI-based Approach for Identifying Interior Design Style Principles",
+          note: "Works on the style-tagged interior photos and explains which visual features define each style. Room Strata turns the color side of that question into something a designer can pick from." },
+        { title: "Enhancing the Interior Design Process with Crowdsourced Furnishing Pairing Recommendations",
+          note: "Mines furnishing pairing rules for each style and ranks them by lift. The same eight styles and the same lift measure decide which bands count as a style's signature here." }
+      ]
+    },
     {
       kind: "tool",
       slug: "designpresso-genpresso",

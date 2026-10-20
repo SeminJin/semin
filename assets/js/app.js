@@ -130,8 +130,11 @@
       const prev = works[(i - 1 + works.length) % works.length];
       const next = works[(i + 1) % works.length];
 
-      const figs = (w.slides || []).map((s, n) => `<figure class="fig">
-          ${s.video
+      const figs = (w.slides || []).filter(s => !s.cardOnly).map((s, n) => `<figure class="fig">
+          ${s.embed
+            ? `<div class="fig-embed"><iframe src="${s.embed}" title="${w.title} — ${s.title}"
+                 allow="clipboard-write"></iframe></div>`
+            : s.video
             ? `<div class="fig-video"><iframe loading="lazy"
                  src="https://www.youtube-nocookie.com/embed/${s.video}"
                  title="${w.title} — ${s.title}" frameborder="0" allowfullscreen
@@ -140,9 +143,30 @@
           <figcaption class="fig-cap">
             <span class="fig-n">${String(n + 1).padStart(2, '0')}</span>
             <h4 class="fig-title">${s.title}</h4>
-            <p class="fig-text">${s.text}</p>
+            <p class="fig-text">${s.text}${s.embed
+              ? ` <a class="fig-open" href="${s.embed}" target="_blank" rel="noopener">Open full screen &#8599;</a>` : ''}</p>
           </figcaption>
         </figure>`).join('');
+
+      /* 관련 연구 — 제목으로 publications 에서 찾아 링크를 그대로 가져온다 */
+      const rel = (w.related || []).map(r => {
+        const p = SITE.publications.find(x => x.title === r.title);
+        if (!p) return '';
+        return `<article class="rel">
+          ${p.thumb ? `<img class="rel-thumb" src="${p.thumb}" alt="" loading="lazy">` : '<div class="rel-thumb"></div>'}
+          <div class="rel-body">
+            <p class="rel-venue">${p.venue}, ${p.year}</p>
+            <h4 class="rel-title">${p.title}</h4>
+            <p class="rel-authors">${p.authors}</p>
+            ${r.note ? `<p class="rel-note">${r.note}</p>` : ''}
+            <div class="rel-links">${links(p.links.filter(l => /pdf|html/i.test(l.label)))}</div>
+          </div>
+        </article>`;
+      }).join('');
+      const related = rel ? `<section class="related" aria-label="Related research">
+          <h3 class="related-h">Related Research</h3>
+          <div class="related-list">${rel}</div>
+        </section>` : '';
 
       return `<article class="project">
         <a class="back" href="#design">&larr; Design Work</a>
@@ -159,6 +183,7 @@
           </div>
         </header>
         <div class="project-body">${figs}</div>
+        ${related}
         <nav class="project-nav" aria-label="projects">
           <a href="#design/${prev.slug}"><span class="k">&larr; Previous</span><span class="t">${prev.title}</span></a>
           <a href="#design/${next.slug}" class="r"><span class="k">Next &rarr;</span><span class="t">${next.title}</span></a>
@@ -298,6 +323,13 @@
     /* 카드·뒤로가기·이전/다음 링크는 해시를 바꾸므로 여기서 받는다 */
     window.addEventListener('hashchange', () =>
       activate(location.hash.slice(1) || 'publication', { track: true, scroll: true }));
+    /* 임베드된 도구가 자기 높이를 알려주면 프레임을 맞춘다 (안쪽 스크롤 없이) */
+    window.addEventListener('message', e => {
+      if (!e.data || e.data.type !== 'embed-height') return;
+      document.querySelectorAll('.fig-embed iframe').forEach(f => {
+        if (f.contentWindow === e.source) f.style.height = e.data.h + 'px';
+      });
+    });
     const first = location.hash.slice(1) || 'publication';
     activate(first, { scroll: first.includes('/') });   // 프로젝트 링크로 들어오면 바로 그 자리로
   }

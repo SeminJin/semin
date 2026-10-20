@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Room Strata — Semin Jin</title>
+<meta name="description" content="A color picker cut from 35,575 interior photos: each style's real colors stacked from ceiling to floor, with saturation free from 0 to 100%.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* Same tokens as seminjin.com so the tool sits inside the project page without a seam.
+   Layout: style rail on top · room section (ceiling→floor × saturation) on the left · the picked color and its provenance on the right. */
+:root{
+  --ink:#141414; --ink-2:#4a4a4a; --ink-3:#8a8a8a; --line:#e4e2de; --bg:#fbfaf8; --bg-2:#ffffff; --chip:#efede9;
+  --accent:#7a002b; --accent-soft:#f6ebee;
+  --pick:#7a4a35; --on-pick:#ffffff; --pick-mark:#7a4a35;
+  --sans:"Inter","Helvetica Neue",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard",sans-serif;
+  --serif:"Newsreader","Iowan Old Style","Times New Roman",serif;
+  --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#f0eeea; --ink-2:#b4b0aa; --ink-3:#7e7a75; --line:#2b2926; --bg:#111110; --bg-2:#191817; --chip:#24221f;
+    --accent:#ef8fa5; --accent-soft:#2a1c1f; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#f0eeea; --ink-2:#b4b0aa; --ink-3:#7e7a75; --line:#2b2926; --bg:#111110; --bg-2:#191817; --chip:#24221f;
+  --accent:#ef8fa5; --accent-soft:#2a1c1f; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased}
+body.solo{padding:28px max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px))}
+body.embed{padding:2px}
+.app{max-width:1180px; margin:0 auto; display:grid; gap:22px}
+.solo-head{display:none}
+body.solo .solo-head{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:8px 24px; border-bottom:1px solid var(--line); padding-bottom:16px}
+.solo-head h1{font-family:var(--serif); font-weight:400; font-size:clamp(28px,4vw,40px); letter-spacing:-.015em; margin:0}
+.solo-head a{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); text-decoration:none}
+.solo-head a:hover{color:var(--accent)}
+
+.k{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); display:flex; justify-content:space-between; gap:8px; margin:0}
+
+/* style rail — each style shown as its own section */
+.rail{display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:10px}
+.sty{display:grid; gap:7px; padding:0; border:0; background:none; color:var(--ink-2); cursor:pointer; font:inherit; text-align:left; min-width:0}
+.sty canvas{width:100%; height:56px; display:block; border-radius:2px; box-shadow:0 0 0 1px var(--line)}
+.sty span{display:grid; min-width:0}
+.sty b{font-weight:500; font-size:12.5px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.sty small{font-family:var(--mono); font-size:10px; color:var(--ink-3)}
+.sty[aria-pressed="true"]{color:var(--ink)}
+.sty[aria-pressed="true"] b{font-weight:600}
+.sty[aria-pressed="true"] canvas{box-shadow:0 0 0 1.5px var(--ink); outline:3px solid var(--bg); outline-offset:-4.5px}
+.sty:focus-visible canvas, button:focus-visible, input:focus-visible, canvas:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+.main{display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:28px; align-items:start}
+.col{display:grid; gap:14px; min-width:0}
+
+/* the room section */
+.room{display:grid; grid-template-columns:18px minmax(0,1fr); grid-template-rows:auto minmax(0,1fr) auto; gap:6px 8px}
+.room .top{grid-column:2}
+.vlab{grid-row:2; writing-mode:vertical-rl; transform:rotate(180deg); display:flex; justify-content:space-between;
+  font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+#room{grid-column:2; grid-row:2; width:100%; aspect-ratio:5/6; max-width:100%; display:block; touch-action:none; cursor:crosshair; border-radius:2px}
+.axis{grid-column:2; grid-row:3; position:relative; height:16px; font-family:var(--mono); font-size:10px; color:var(--ink-3)}
+.axis span{position:absolute; transform:translateX(-50%); white-space:nowrap}
+.axis span:first-child{transform:none} .axis span:last-child{transform:translateX(-100%)}
+.controls{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; padding-left:26px}
+.seg{display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:2px}
+.seg button{border:0; background:none; color:var(--ink-3); font:inherit; font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; padding:6px 11px; border-radius:999px; cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent-soft); color:var(--accent)}
+.toggle{display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-2); cursor:pointer; user-select:none}
+.toggle input{accent-color:var(--accent); width:15px; height:15px; margin:0}
+.hint{font-size:12.5px; color:var(--ink-3); margin:0; padding-left:26px; max-width:52ch}
+
+/* the picked color */
+.swatch{position:relative; background:var(--pick); color:var(--on-pick); border-radius:3px; min-height:230px;
+  display:flex; flex-direction:column; justify-content:space-between; gap:24px; padding:20px 22px; transition:background .2s,color .2s; box-shadow:inset 0 0 0 1px var(--line)}
+.swatch .hex{font-family:var(--mono); font-size:clamp(24px,3vw,34px); font-weight:500; letter-spacing:-.01em}
+.swatch .where{font-family:var(--serif); font-size:16.5px; line-height:1.45; max-width:40ch}
+.swatch .where b{font-weight:500; font-style:italic}
+.real{position:absolute; right:18px; top:18px; display:grid; justify-items:end; gap:5px; font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase}
+.real i{width:54px; height:54px; border-radius:2px; display:block; box-shadow:0 0 0 1.5px var(--on-pick)}
+.sliders{display:grid; grid-template-columns:1fr 1fr; gap:14px 20px}
+.slider{display:grid; gap:7px}
+.slider output{font-variant-numeric:tabular-nums}
+.slider input{width:100%; margin:0; -webkit-appearance:none; appearance:none; height:22px; border-radius:11px; background:var(--grad,var(--chip)); box-shadow:inset 0 0 0 1px var(--line); cursor:pointer}
+.slider input::-webkit-slider-thumb{-webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:var(--pick); border:3px solid var(--bg); box-shadow:0 0 0 1.5px var(--ink)}
+.slider input::-moz-range-thumb{width:14px; height:14px; border-radius:50%; background:var(--pick); border:3px solid var(--bg); box-shadow:0 0 0 1.5px var(--ink)}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px 20px; align-items:start}
+.values{display:grid; gap:6px}
+.value{display:flex; justify-content:space-between; align-items:center; gap:10px; width:100%; font-family:var(--mono); font-size:12px;
+  padding:8px 11px; border-radius:3px; border:1px solid var(--line); background:var(--bg-2); color:var(--ink); cursor:pointer; text-align:left}
+.value em{font-style:normal; color:var(--ink-3); font-size:10px; letter-spacing:.08em; text-transform:uppercase}
+.value:hover{border-color:var(--ink-3)}
+.paste{display:grid; gap:6px}
+.paste input{width:100%; font-family:var(--mono); font-size:12px; padding:9px 11px; border-radius:3px; border:1px solid var(--line); background:var(--bg-2); color:var(--ink)}
+.paste .note{font-size:12px; color:var(--ink-3); min-height:1.3em; margin:0}
+.facts{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:3px; overflow:hidden}
+.fact{background:var(--bg); padding:10px 12px; min-width:0}
+.fact b{display:block; font-family:var(--serif); font-size:24px; font-weight:400; line-height:1.1; font-variant-numeric:tabular-nums}
+.fact small{color:var(--ink-3); font-size:11.5px}
+.bars{display:grid; gap:5px}
+.bar{display:grid; grid-template-columns:84px minmax(0,1fr) 36px; gap:8px; align-items:center; font-size:12.5px}
+.bar .t{height:6px; border-radius:3px; background:var(--chip); position:relative; overflow:hidden}
+.bar .t i{position:absolute; inset:0 auto 0 0; background:var(--ink-2); border-radius:3px}
+.bar .n{font-family:var(--mono); font-size:11px; color:var(--ink-3); text-align:right; font-variant-numeric:tabular-nums}
+.bar .nm{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.across{display:grid; grid-template-columns:1fr 1fr; gap:5px 20px}
+.across .k{grid-column:1/-1}
+.across .bar{grid-template-columns:112px minmax(0,1fr) 38px; cursor:pointer; border-radius:2px}
+.across .bar:hover .nm{color:var(--accent)}
+.across .t{background:none; height:12px; overflow:visible}
+.across .t::before{content:""; position:absolute; left:50%; top:-2px; bottom:-2px; width:1px; background:var(--line)}
+.across .t i{border-radius:1px; background:var(--ink-3); inset:2px auto 2px auto}
+.across .bar.cur .nm{font-weight:600}
+.across .bar.cur .t i{background:var(--pick-mark)}
+.across .bar.cur .n{color:var(--ink)}
+
+@media (max-width:860px){
+  .main{grid-template-columns:minmax(0,1fr)}
+  #room{aspect-ratio:4/5}
+}
+@media (max-width:620px){
+  .rail{grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px 8px}
+  .sliders,.grid2,.across{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="solo-head">
+    <h1>Room Strata</h1>
+    <a href="../../#design/room-strata">&larr; Project page</a>
+  </header>
+
+  <nav class="rail" id="rail" aria-label="Interior style"></nav>
+
+  <div class="main">
+    <section class="col" aria-label="Room section">
+      <div class="room">
+        <p class="k top"><span id="styleName"></span><span><span id="bandCount"></span> &middot; saturation &rarr;</span></p>
+        <div class="vlab"><span>Floor</span><span>Ceiling</span></div>
+        <canvas id="room" tabindex="0" aria-label="Room section of the selected style. Up and down choose a band, left and right change saturation."></canvas>
+        <div class="axis" id="axis"></div>
+      </div>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Band thickness">
+          <button id="mSig" aria-pressed="true">Signature</button>
+          <button id="mAll" aria-pressed="false">Whole room</button>
+        </div>
+        <label class="toggle"><input type="checkbox" id="line" checked> Saturation in photos</label>
+      </div>
+      <p class="hint" id="modeHint"></p>
+    </section>
+
+    <section class="col" aria-label="Picked color">
+      <div class="swatch" id="swatch">
+        <div class="hex" id="hex"></div>
+        <div class="real"><i id="realChip"></i><span>in photos</span></div>
+        <p class="where" id="where" style="margin:0"></p>
+      </div>
+      <div class="sliders">
+        <div class="slider">
+          <p class="k"><span>Saturation</span><output id="satOut"></output></p>
+          <input type="range" id="sat" min="0" max="100" step="1" aria-label="Saturation">
+        </div>
+        <div class="slider">
+          <p class="k"><span>Lightness</span><output id="litOut"></output></p>
+          <input type="range" id="lit" min="2" max="98" step="1" aria-label="Lightness">
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="col" style="gap:10px">
+          <div class="values" id="values"></div>
+          <div class="paste">
+            <input id="paste" placeholder="Paste a color: #c08a5b, rgb(…)" autocomplete="off" spellcheck="false" aria-label="Paste a color to find its band">
+            <p class="note" id="pasteNote"></p>
+          </div>
+        </div>
+        <div class="col" style="gap:14px">
+          <div class="facts" id="facts"></div>
+          <div class="bars" id="objs"></div>
+          <div class="bars" id="mats"></div>
+        </div>
+      </div>
+      <div class="across" id="across"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+(async function () {
+  const SOLO = window.top === window.self;
+  document.body.classList.add(SOLO ? 'solo' : 'embed');
+
+  let DATA;
+  try { DATA = await (await fetch('data.json')).json(); }
+  catch (e) { document.querySelector('.app').insertAdjacentHTML('beforeend', '<p class="hint">The color data did not load. Reload the page to try again.</p>'); return; }
+
+  /* ---------- color math (OKLab / OKLCH) ---------- */
+  const lin = c => { c /= 255; return c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4 };
+  const enc = c => c <= .0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - .055;
+  function lch2lin(L, C, h) {
+    const a = C * Math.cos(h), b = C * Math.sin(h);
+    const l = (L + .3963377774 * a + .2158037573 * b) ** 3, m = (L - .1055613458 * a - .0638541728 * b) ** 3,
+          s = (L - .0894841775 * a - 1.2914855480 * b) ** 3;
+    return [4.0767416621 * l - 3.3077115913 * m + .2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - .3413193965 * s,
+            -.0041960863 * l - .7034186147 * m + 1.7076147010 * s];
+  }
+  const lch2rgb = (L, C, h) => lch2lin(L, C, h).map(v => Math.round(Math.min(1, Math.max(0, enc(Math.min(1, Math.max(0, v))))) * 255));
+  function rgb2lab([r, g, b]) {
+    r = lin(r); g = lin(g); b = lin(b);
+    const l = Math.cbrt(.4122214708 * r + .5363325363 * g + .0514459929 * b), m = Math.cbrt(.2119034982 * r + .6806995451 * g + .1073969566 * b),
+          s = Math.cbrt(.0883024619 * r + .2817188376 * g + .6299787005 * b);
+    return [.2104542553 * l + .7936177850 * m - .0040720468 * s, 1.9779984951 * l - 2.4285922050 * m + .4505937099 * s,
+            .0259040371 * l + .7827717662 * m - .8086757660 * s];
+  }
+  function cmax(L, h) {
+    let lo = 0, hi = .4;
+    for (let i = 0; i < 18; i++) { const mid = (lo + hi) / 2, v = lch2lin(L, mid, h); if (v.every(x => x >= -1e-4 && x <= 1.0001)) lo = mid; else hi = mid }
+    return lo;
+  }
+  const hex = rgb => '#' + rgb.map(v => v.toString(16).padStart(2, '0')).join('');
+  function rgb2hsl([r, g, b]) {
+    r /= 255; g /= 255; b /= 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn; let h = 0, s = 0;
+    if (d) { s = d / (1 - Math.abs(2 * l - 1)); h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h = (h * 60 + 360) % 360 }
+    return [Math.round(h), Math.round(s * 100), Math.round(l * 100)];
+  }
+  /* saturation axis: square-root spacing, so the low saturations real rooms live in get room */
+  const sat2x = s => Math.sqrt(Math.max(0, s));
+  const x2sat = x => Math.min(1, Math.max(0, x)) ** 2;
+
+  /* ---------- prepare ---------- */
+  const NAMES = DATA.styles.map(s => s.name);
+  for (const st of DATA.styles) for (const b of st.bands) {
+    b.cm = cmax(b.L, b.h); b.realHex = hex(lch2rgb(b.L, b.C, b.h));
+    b.sig = b.lift > 1.05 ? b.share * (b.lift - 1) : 0;
+  }
+
+  /* ---------- state ---------- */
+  const $ = id => document.getElementById(id);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  let si = 0, mode = 'sig', showLine = true, band = null, sat = .5, L = .5;
+  const saved = (() => { try { return JSON.parse(localStorage.getItem('roomstrata') || '{}') } catch (e) { return {} } })();
+  si = Math.max(0, DATA.styles.findIndex(s => s.key === ((SOLO && location.hash.slice(1)) || saved.style || 'korean')));
+  if (saved.mode === 'all') mode = 'all';
+  const style = () => DATA.styles[si];
+  const weight = b => mode === 'sig' ? b.sig : b.share;
+  const bandsOf = st => st.bands.filter(b => weight(b) > 0);
+  function layout(st, h) {
+    const bs = bandsOf(st), tot = bs.reduce((a, b) => a + weight(b), 0); let y = 0;
+    return bs.map(b => { const r = { b, y0: y, y1: y + weight(b) / tot * h }; y = r.y1; return r });
+  }
+
+  /* ---------- canvases ---------- */
+  function fit(cv) {
+    const r = cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h }
+    return { ctx: cv.getContext('2d'), w, h, dpr };
+  }
+  function drawThumb(cv, st) {
+    const { ctx, w, h } = fit(cv), rows = layout(st, h);
+    ctx.clearRect(0, 0, w, h);
+    for (const r of rows) { ctx.fillStyle = r.b.realHex; ctx.fillRect(0, Math.floor(r.y0), w, Math.ceil(r.y1 - r.y0) + 1) }
+  }
+  let cache = null;
+  function drawRoom() {
+    const cv = $('room'), { ctx, w, h, dpr } = fit(cv);
+    const key = [si, mode, w, h].join('|');
+    if (!cache || cache.key !== key) {
+      const rows = layout(style(), h), img = ctx.createImageData(w, h), px = img.data, cols = 160;
+      for (const r of rows) {
+        const strip = [];
+        for (let i = 0; i < cols; i++) strip.push(lch2rgb(r.b.L, x2sat((i + .5) / cols) * r.b.cm, r.b.h));
+        const ya = Math.floor(r.y0), yb = Math.min(h, Math.ceil(r.y1));
+        for (let y = ya; y < yb; y++) for (let x = 0; x < w; x++) {
+          const c = strip[Math.min(cols - 1, Math.floor(x / w * cols))], k = (y * w + x) * 4;
+          px[k] = c[0]; px[k + 1] = c[1]; px[k + 2] = c[2]; px[k + 3] = 255;
+        }
+      }
+      cache = { key, img, rows };
+    }
+    ctx.putImageData(cache.img, 0, 0);
+    const bg = css('--bg'), ink = css('--ink');
+    if (showLine) for (const r of cache.rows) {             // a tick at each band's saturation in real photos
+      const x = sat2x(r.b.sat) * w, y0 = r.y0 + .5 * dpr, hh = Math.max(1 * dpr, r.y1 - r.y0 - 1 * dpr);
+      ctx.fillStyle = bg; ctx.fillRect(x - 2.2 * dpr, y0, 4.4 * dpr, hh);
+      ctx.fillStyle = ink; ctx.fillRect(x - 1 * dpr, y0, 2 * dpr, hh);
+    }
+    const hit = cache.rows.find(r => r.b === band);
+    if (hit) {
+      const y = (hit.y0 + hit.y1) / 2, rad = 10 * dpr, x = Math.min(w - rad - 3 * dpr, Math.max(rad + 3 * dpr, sat2x(sat) * w));
+      ctx.strokeStyle = bg; ctx.lineWidth = 1 * dpr; ctx.strokeRect(-2, hit.y0, w + 4, Math.max(2 * dpr, hit.y1 - hit.y0));
+      ctx.beginPath(); ctx.arc(x, y, rad, 0, 7); ctx.fillStyle = hex(current()); ctx.fill(); ctx.lineWidth = 3 * dpr; ctx.strokeStyle = bg; ctx.stroke();
+      ctx.beginPath(); ctx.arc(x, y, rad + 2 * dpr, 0, 7); ctx.lineWidth = 1.5 * dpr; ctx.strokeStyle = ink; ctx.stroke();
+    }
+  }
+  $('axis').innerHTML = [0, .05, .15, .4, 1].map(s => `<span style="left:${sat2x(s) * 100}%">${Math.round(s * 100)}${s === 1 ? '%' : ''}</span>`).join('');
+
+  /* ---------- picking ---------- */
+  const current = () => lch2rgb(L, sat * cmax(L, band.h), band.h);
+  function setBand(b, s) { if (b !== band) L = b.L; band = b; sat = s; render(); }
+  function pickAt(e) {
+    const r = $('room').getBoundingClientRect(), fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
+    const rows = layout(style(), 1), hit = rows.find(q => fy >= q.y0 && fy < q.y1) || rows[fy < 0 ? 0 : rows.length - 1];
+    setBand(hit.b, x2sat(fx));
+  }
+  const room = $('room');
+  room.addEventListener('pointerdown', e => { room.setPointerCapture(e.pointerId); pickAt(e) });
+  room.addEventListener('pointermove', e => { if (room.hasPointerCapture(e.pointerId)) pickAt(e) });
+  room.addEventListener('keydown', e => {
+    const bs = bandsOf(style()), i = bs.indexOf(band);
+    if (e.key === 'ArrowUp') setBand(bs[Math.max(0, i - 1)], sat); else if (e.key === 'ArrowDown') setBand(bs[Math.min(bs.length - 1, i + 1)], sat);
+    else if (e.key === 'ArrowRight') setBand(band, Math.min(1, sat + .02)); else if (e.key === 'ArrowLeft') setBand(band, Math.max(0, sat - .02));
+    else return; e.preventDefault();
+  });
+  $('sat').addEventListener('input', e => { sat = e.target.value / 100; render() });
+  $('lit').addEventListener('input', e => { L = e.target.value / 100; render() });
+
+  /* ---------- details ---------- */
+  const heightWord = y => y < .3 ? 'near the ceiling' : y < .5 ? 'on the upper walls' : y < .66 ? 'at eye level' : y < .8 ? 'low in the room' : 'at floor level';
+  const fmtLift = v => '×' + (v >= 10 ? v.toFixed(0) : v.toFixed(v < 1 ? 2 : 1));
+  function bars(el, title, rows) {
+    el.innerHTML = `<p class="k"><span>${title}</span></p>` + rows.map(([k, v]) =>
+      `<div class="bar"><span class="nm">${k}</span><span class="t"><i style="width:${Math.min(100, v)}%"></i></span><span class="n">${v}%</span></div>`).join('');
+  }
+  function render() {
+    const st = style(), b = band, rgb = current(), hx = hex(rgb), lab = rgb2lab(rgb), hsl = rgb2hsl(rgb);
+    const C = Math.hypot(lab[1], lab[2]), hDeg = (Math.atan2(lab[2], lab[1]) * 180 / Math.PI + 360) % 360;
+    const root = document.documentElement.style;
+    root.setProperty('--pick', hx);
+    root.setProperty('--on-pick', lab[0] > .66 ? '#141414' : '#f7f6f2');
+    const bgL = rgb2lab(parseColor(css('--bg')) || [251, 250, 248])[0];
+    root.setProperty('--pick-mark', Math.abs(lab[0] - bgL) > .22 ? hx : 'var(--ink)');
+    $('hex').textContent = hx.toUpperCase();
+    $('realChip').style.background = b.realHex;
+    const o = b.obj.map(x => x[0]);
+    $('where').innerHTML = `Found mostly on <b>${o[0]}</b>${o[1] ? `, ${o[1]}` : ''}${o[2] ? ` and ${o[2]}` : ''}, ${heightWord(b.y)}. ` +
+      (b.lift >= 1.25 ? `${fmtLift(b.lift)} more common in ${st.name} than across all styles.` :
+       b.lift <= .8 ? `Rarer in ${st.name} than in other styles (${fmtLift(b.lift)}).` : `About as common here as in other styles.`);
+    $('sat').value = Math.round(sat * 100); $('satOut').textContent = `${Math.round(sat * 100)}% · photos ${Math.round(b.sat * 100)}%`;
+    $('lit').value = Math.round(L * 100); $('litOut').textContent = `${Math.round(L * 100)}% · photos ${Math.round(b.L * 100)}%`;
+    const g = s => hex(lch2rgb(L, s * cmax(L, b.h), b.h));
+    $('sat').style.setProperty('--grad', `linear-gradient(90deg, ${g(0)}, ${g(.06)} 25%, ${g(.25)} 50%, ${g(1)})`);
+    $('lit').style.setProperty('--grad', `linear-gradient(90deg, ${[.05, .3, .5, .7, .95].map(l => hex(lch2rgb(l, sat * cmax(l, b.h), b.h))).join(',')})`);
+    const vals = [['hex', hx.toUpperCase()], ['rgb', `rgb(${rgb.join(', ')})`], ['hsl', `hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`],
+                  ['oklch', `oklch(${(lab[0] * 100).toFixed(1)}% ${C.toFixed(3)} ${hDeg.toFixed(1)})`]];
+    $('values').innerHTML = vals.map(([k, v]) => `<button class="value" data-v="${v}" data-k="${k}"><span>${v}</span><em>${k}</em></button>`).join('');
+    $('values').querySelectorAll('.value').forEach(el => el.addEventListener('click', () => copy(el)));
+    $('facts').innerHTML =
+      `<div class="fact"><b>${b.share < 1 ? b.share.toFixed(2) : b.share.toFixed(1)}%</b><small>of the room's area</small></div>` +
+      `<div class="fact"><b>${fmtLift(b.lift)}</b><small>vs. all styles</small></div>` +
+      `<div class="fact"><b>${Math.round(b.y * 100)}%</b><small>down from ceiling</small></div>` +
+      `<div class="fact"><b>${b.photos.toLocaleString()}</b><small>photos with it</small></div>`;
+    bars($('objs'), 'Found on', b.obj.slice(0, 3));
+    bars($('mats'), 'Material', b.mat);
+    const lifts = DATA.clusters[b.id] || [], mx = Math.log2(Math.max(2, ...lifts.map(v => Math.max(v, 1 / v))));
+    $('across').innerHTML = `<p class="k"><span>The same color in other styles</span><span>rarer &middot; more common</span></p>` +
+      lifts.map((v, i) => {
+        const lg = Math.log2(Math.max(v, .05)) / mx * 50, left = lg >= 0 ? 50 : 50 + lg;
+        return `<div class="bar${i === si ? ' cur' : ''}" data-i="${i}" role="button" tabindex="0"><span class="nm">${NAMES[i]}</span><span class="t"><i style="left:${left}%;width:${Math.max(.8, Math.abs(lg))}%"></i></span><span class="n">${fmtLift(v)}</span></div>`;
+      }).join('');
+    $('across').querySelectorAll('.bar[data-i]').forEach(el => {
+      const go = () => setStyle(+el.dataset.i, b.id);
+      el.addEventListener('click', go); el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } });
+    });
+    drawRoom();
+  }
+  function copy(el) {
+    const done = () => { el.querySelector('em').textContent = 'copied'; setTimeout(() => { el.querySelector('em').textContent = el.dataset.k }, 1100) };
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents(el.querySelector('span')); const s = getSelection(); s.removeAllRanges(); s.addRange(r) };
+    try { navigator.clipboard.writeText(el.dataset.v).then(done, fallback) } catch (e) { fallback() }
+  }
+
+  /* ---------- paste: find the band whose grey→vivid line passes closest ---------- */
+  const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+  function parseColor(str) {
+    str = String(str).trim(); if (!str) return null;
+    if (/^[0-9a-f]{3}([0-9a-f]{3})?$/i.test(str)) str = '#' + str;
+    probe.fillStyle = '#010203'; probe.fillStyle = str;
+    if (probe.fillStyle === '#010203' && !/^#?010203$/i.test(str)) return null;
+    probe.clearRect(0, 0, 1, 1); probe.fillRect(0, 0, 1, 1);
+    const d = probe.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2]];
+  }
+  $('paste').addEventListener('input', e => {
+    const v = e.target.value.trim();
+    if (!v) { $('pasteNote').textContent = ''; return }
+    const rgb = parseColor(v);
+    if (!rgb) { $('pasteNote').textContent = 'Not a color this can read. Try a hex code like #c08a5b.'; return }
+    const p = rgb2lab(rgb); let best = null, bs = 0, bd = 1e9;
+    for (const b of bandsOf(style())) for (let i = 0; i <= 40; i++) {
+      const s = i / 40, C = s * b.cm, d = Math.hypot(b.L - p[0], C * Math.cos(b.h) - p[1], C * Math.sin(b.h) - p[2]);
+      if (d < bd) { bd = d; best = b; bs = s }
+    }
+    setBand(best, bs);
+    $('pasteNote').textContent = `On the ${best.obj[0][0]} band, ${Math.round(best.y * 100)}% down. ${style().name} photos show it at ${Math.round(best.sat * 100)}% saturation (ΔE ${(bd * 100).toFixed(1)}).`;
+  });
+
+  /* ---------- styles & modes ---------- */
+  DATA.styles.forEach((st, i) => {
+    const b = document.createElement('button');
+    b.className = 'sty'; b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = `<canvas aria-hidden="true"></canvas><span><b>${st.name}</b><small>${st.photos.toLocaleString()} photos</small></span>`;
+    b.addEventListener('click', () => setStyle(i));
+    $('rail').appendChild(b);
+  });
+  const drawThumbs = () => DATA.styles.forEach((st, i) => drawThumb($('rail').children[i].querySelector('canvas'), st));
+  const save = () => { try { localStorage.setItem('roomstrata', JSON.stringify({ style: style().key, mode })) } catch (e) {} };
+  function setStyle(i, keepId) {
+    si = i; const st = style(), bs = bandsOf(st);
+    if (SOLO) history.replaceState(null, '', '#' + st.key);
+    save();
+    [...$('rail').children].forEach((el, j) => el.setAttribute('aria-pressed', j === si));
+    $('styleName').textContent = st.name;
+    $('bandCount').textContent = `${bs.length} bands`;
+    let nb = keepId != null ? bs.find(b => b.id === keepId) : null;
+    if (!nb && band) nb = bs.reduce((a, b) => Math.abs(b.y - band.y) + Math.abs(b.L - band.L) < Math.abs(a.y - band.y) + Math.abs(a.L - band.L) ? b : a, bs[0]);
+    const ARCH = /^(wall|floor|ceiling|window|door)$/;
+    if (!nb) nb = [...bs].filter(b => !ARCH.test(b.obj[0][0])).sort((a, b) => b.sig - a.sig)[0] || [...bs].sort((a, b) => weight(b) - weight(a))[0];
+    const s = band ? sat : Math.min(.7, nb.sat * 1.6 + .04);
+    band = null; setBand(nb, s);
+  }
+  function setMode(m) {
+    mode = m; save();
+    $('mSig').setAttribute('aria-pressed', m === 'sig'); $('mAll').setAttribute('aria-pressed', m === 'all');
+    $('modeHint').textContent = m === 'sig'
+      ? 'Band thickness shows what sets this style apart: colors used more here than across all eight styles.'
+      : 'Band thickness shows how much of the room each color covers, walls and floors included.';
+    drawThumbs(); cache = null; setStyle(si, band ? band.id : null);
+  }
+  $('mSig').addEventListener('click', () => setMode('sig'));
+  $('mAll').addEventListener('click', () => setMode('all'));
+  $('line').addEventListener('change', e => { showLine = e.target.checked; drawRoom() });
+
+  let rt = 0;
+  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { cache = null; drawThumbs(); band && render() }, 120) });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => { drawThumbs(); band && render() });
+  new MutationObserver(() => band && render()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  /* tell the project page how tall this is, so the frame never scrolls */
+  if (!SOLO) {
+    const post = () => parent.postMessage({ type: 'embed-height', id: 'room-strata', h: Math.ceil(document.querySelector('.app').getBoundingClientRect().height) + 6 }, '*');
+    new ResizeObserver(post).observe(document.querySelector('.app')); post();
+  }
+  setMode(mode);
+})();
+</script>
+</body>
+</html>
