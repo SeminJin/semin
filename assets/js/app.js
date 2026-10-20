@@ -53,8 +53,19 @@
 
   /* ---------- 패널 ---------- */
   const panels = {
+    /* 연구 축 필터 — Design Work 필터와 같은 모양. 태그가 여럿인 논문은 각 축에 다 나온다 */
     publication() {
-      return SITE.publications.map(p => `<article class="pub">
+      const pubs = SITE.publications;
+      const axes = ['spatial', 'perceptual', 'experiential'].filter(t => pubs.some(p => p.tags.includes(t)));
+      const cap = t => t[0].toUpperCase() + t.slice(1);
+      const hide = p => pubFilter !== 'all' && !p.tags.includes(pubFilter);
+      const filter = `<div class="filters" role="group" aria-label="filter by research axis">
+          <button class="filter${pubFilter === 'all' ? ' on' : ''}" data-tag="all">All
+            <span class="n">${pubs.length}</span></button>
+          ${axes.map(t => `<button class="filter${pubFilter === t ? ' on' : ''}" data-tag="${t}">${cap(t)}
+            <span class="n">${pubs.filter(p => p.tags.includes(t)).length}</span></button>`).join('')}
+        </div>`;
+      return filter + pubs.map(p => `<article class="pub" data-tags="${p.tags.join(' ')}"${hide(p) ? ' hidden' : ''}>
         <figure class="pub-media">${p.thumb
           ? `<img class="pub-thumb" src="${p.thumb}" alt="" loading="lazy">`
           : `<div class="pub-thumb empty">FIGURE</div>`}</figure>
@@ -213,6 +224,16 @@
 
   /* ---------- 디자인 워크: 카드 이미지 순환 + 필터 ---------- */
   let workFilter = 'all';                       // 상세 페이지 다녀와도 필터 유지
+  let pubFilter = 'all';                        // 다른 탭 다녀와도 유지
+
+  function bindPubFilter(root) {
+    root.querySelectorAll('.filter[data-tag]').forEach(b => b.addEventListener('click', () => {
+      pubFilter = b.dataset.tag;
+      root.querySelectorAll('.filter[data-tag]').forEach(x => x.classList.toggle('on', x === b));
+      root.querySelectorAll('.pub').forEach(a =>
+        a.toggleAttribute('hidden', pubFilter !== 'all' && !a.dataset.tags.split(' ').includes(pubFilter)));
+    }));
+  }
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const NO_HOVER = matchMedia('(hover: none)').matches;
 
@@ -300,6 +321,7 @@
     }
     host.innerHTML = html;
     if (key === 'design' && !sub) bindGallery(host);
+    if (key === 'publication') bindPubFilter(host);
     host.className = 'panel is-active';
 
     const want = sub ? `${key}/${sub}` : key;

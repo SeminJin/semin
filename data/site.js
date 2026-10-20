@@ -68,7 +68,7 @@ const SITE = {
     { label: "GitHub",                url: "https://github.com/SeminJin" }
   ],
 
-  cv: "assets/files/Semin_Jin_CV.pdf",
+  cv: "assets/files/Semin_Jin_CV.pdf?v=20261012",
 
   news: [
     { date: "Oct, 2026", text: "Paper published in <b>International Journal of Human&ndash;Computer Interaction</b>." },
